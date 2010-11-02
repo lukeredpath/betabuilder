@@ -1,3 +1,7 @@
+require 'ostruct'
+require 'fileutils'
+require 'cfpropertylist'
+
 module BetaBuilder
   class Tasks < ::Rake::TaskLib
     def initialize(&block)
