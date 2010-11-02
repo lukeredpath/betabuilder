@@ -1,0 +1,1 @@
+require 'beta_builder'
