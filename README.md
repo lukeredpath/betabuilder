@@ -2,7 +2,7 @@
 
 BetaBuilder is a simple collection of Rake tasks and utilities for managing and publishing Adhoc builds of your iOS apps. 
 
-It is inspired by and owes a lot of credit to [Hunter Hillegas](http://www.hanchorllc.com/2010/08/24/introducing-ios-beta-builder/) who created the original OSX Beta Builder utility.
+If you're looking for the OSX BetaBuilder app -- to which this gem owes most of the credit -- you can find it [here on Github](http://github.com/HunterHillegas/iOS-BetaBuilder).
 
 ## Motiviation
 
