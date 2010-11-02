@@ -9,9 +9,9 @@ Gem::Specification.new do |s|
   s.date = %q{2010-11-02}
   s.email = %q{luke@lukeredpath.co.uk}
   s.extra_rdoc_files = ["README.md"]
-  s.files = ["LICENSE", "README.md", "lib/beta_builder.rb", "lib/betabuilder.rb"]
+  s.files = ["LICENSE", "README.md", "lib/beta_builder/archived_build.rb", "lib/beta_builder.rb", "lib/betabuilder.rb"]
   s.has_rdoc = false
-  s.homepage = %q{http://lukeredpath.co.uk}
+  s.homepage = %q{http://github.com/lukeredpath/betabuilder}
   s.rdoc_options = ["--main", "README.md"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}

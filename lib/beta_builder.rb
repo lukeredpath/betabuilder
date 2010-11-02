@@ -1,13 +1,16 @@
 require 'ostruct'
 require 'fileutils'
 require 'cfpropertylist'
+require 'beta_builder/archived_build'
 
 module BetaBuilder
   class Tasks < ::Rake::TaskLib
     def initialize(&block)
       @configuration = Configuration.new(
         :configuration => "Adhoc",
-        :build_dir => "build"
+        :build_dir => "build",
+        :auto_archive => false,
+        :archive_path  => File.expand_path("~/Library/MobileDevice/Archived Applications/")
       )
       yield @configuration if block_given?
       define
@@ -28,6 +31,10 @@ module BetaBuilder
       
       def built_app_path
         "#{build_dir}/#{configuration}-iphoneos/#{app_name}"
+      end
+      
+      def built_app_dsym_path
+        "#{built_app_path}.dSYM"
       end
       
       def deployment_url
@@ -58,6 +65,10 @@ module BetaBuilder
         
         desc "Package the beta release as an IPA file"
         task :package => :build do
+          if @configuration.auto_archive
+            Rake::Task['beta:archive'].invoke
+          end
+                    
           FileUtils.rm_rf('pkg') && FileUtils.mkdir_p('pkg')
           FileUtils.mkdir_p("pkg/Payload")
           FileUtils.mv(@configuration.built_app_path, "pkg/Payload/#{@configuration.app_name}")
@@ -134,6 +145,12 @@ module BetaBuilder
         desc "Deploy the beta to your server"
         task :deploy => :package do
           system("scp pkg/dist/* lukeredpath.co.uk:#{@configuration.remote_installation_path}")
+        end
+        
+        desc "Build and archive the app"
+        task :archive => :build do
+          archive = BetaBuilder::ArchivedBuild.new(@configuration)
+          archive.save_to(@configuration.archive_path)
         end
       end
     end
