@@ -17,7 +17,7 @@ spec = Gem::Specification.new do |s|
   s.summary           = "A set of Rake tasks and utilities for managing iOS ad-hoc builds"
   s.author            = "Luke Redpath"
   s.email             = "luke@lukeredpath.co.uk"
-  s.homepage          = "http://lukeredpath.co.uk"
+  s.homepage          = "http://github.com/lukeredpath/betabuilder"
 
   s.has_rdoc          = false
   s.extra_rdoc_files  = %w(README.md)
