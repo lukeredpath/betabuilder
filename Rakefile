@@ -65,3 +65,9 @@ desc 'Clear out RDoc and generated packages'
 task :clean => [:clobber_rdoc, :clobber_package] do
   rm "#{spec.name}.gemspec"
 end
+
+desc 'Build and release to Rubygems.org'
+task :release => :package do
+  gem_path = File.join('pkg', spec.file_name)
+  system "gem push #{gem_path}"
+end
