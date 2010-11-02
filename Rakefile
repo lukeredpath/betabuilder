@@ -13,7 +13,7 @@ spec = Gem::Specification.new do |s|
 
   # Change these as appropriate
   s.name              = "betabuilder"
-  s.version           = "0.1.0"
+  s.version           = "0.1.1"
   s.summary           = "A set of Rake tasks and utilities for managing iOS ad-hoc builds"
   s.author            = "Luke Redpath"
   s.email             = "luke@lukeredpath.co.uk"
