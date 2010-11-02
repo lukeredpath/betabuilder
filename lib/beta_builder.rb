@@ -66,9 +66,9 @@ module BetaBuilder
         
         desc "Package the beta release as an IPA file"
         task :package => :build do
-          # if @configuration.auto_archive
-          #   Rake::Task['beta:archive'].invoke
-          # end
+          if @configuration.auto_archive
+            Rake::Task['beta:archive'].invoke
+          end
                     
           FileUtils.rm_rf('pkg') && FileUtils.mkdir_p('pkg')
           FileUtils.mkdir_p("pkg/Payload")
@@ -148,11 +148,11 @@ module BetaBuilder
           system("scp pkg/dist/* lukeredpath.co.uk:#{@configuration.remote_installation_path}")
         end
         
-        # desc "Build and archive the app"
-        # task :archive => :build do
-        #   archive = BetaBuilder::ArchivedBuild.new(@configuration)
-        #   archive.save_to(@configuration.archive_path)
-        # end
+        desc "Build and archive the app"
+        task :archive => :build do
+          archive = BetaBuilder::ArchivedBuild.new(@configuration)
+          archive.save_to(@configuration.archive_path)
+        end
       end
     end
   end
