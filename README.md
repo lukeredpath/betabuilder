@@ -16,7 +16,7 @@ This simple task library allows you to configure once and then build, package an
 
 To get started, if you don't already have a Rakefile in the root of your project, create one. If you aren't familiar with Rake, it might be worth [going over some of the basics](http://rake.rubyforge.org/) but it's fairly straightforward.
 
-You can install the BetaBuilder gem from your terminal (OSX 10.6 works with a perfectly useful Ruby installation):
+You can install the BetaBuilder gem from your terminal (OSX 10.6 ships with a perfectly useful Ruby installation):
 
     $ gem install betabuilder
 
