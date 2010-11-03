@@ -145,7 +145,7 @@ module BetaBuilder
         
         desc "Deploy the beta to your server"
         task :deploy => :package do
-          system("scp pkg/dist/* lukeredpath.co.uk:#{@configuration.remote_installation_path}")
+          system("scp pkg/dist/* #{@configuration.remote_host}:#{@configuration.remote_installation_path}")
         end
         
         desc "Build and archive the app"
