@@ -3,6 +3,27 @@ module BetaBuilder
     class Web
       def initialize(configuration)
         @configuration = configuration
+        @configuration.class_eval(&extended_configuration_for_strategy)
+      end
+      
+      def extended_configuration_for_strategy
+        proc do
+          def deployment_url
+            File.join(deploy_to, target.downcase, ipa_name)
+          end
+
+          def manifest_url
+            File.join(deploy_to, target.downcase, "manifest.plist")
+          end
+
+          def remote_installation_path
+            File.join(remote_directory, target.downcase)
+          end
+        end
+      end
+
+      def configure(&block)
+        yield @configuration
       end
       
       def prepare

@@ -3,7 +3,7 @@ require 'ostruct'
 require 'fileutils'
 require 'cfpropertylist'
 require 'beta_builder/archived_build'
-require 'beta_builder/deployment_strategies/web'
+require 'beta_builder/deployment_strategies'
 
 module BetaBuilder
   class Tasks < ::Rake::TaskLib
@@ -39,21 +39,10 @@ module BetaBuilder
         "#{built_app_path}.dSYM"
       end
       
-      def deployment_url
-        File.join(deploy_to, target.downcase, ipa_name)
-      end
-      
-      def manifest_url
-        File.join(deploy_to, target.downcase, "manifest.plist")
-      end
-      
-      def remote_installation_path
-        File.join(remote_directory, target.downcase)
-      end
-      
-      def deploy_using(strategy_name)
-        if DeploymentStrategies.valid?(strategy_name.to_sym)
+      def deploy_using(strategy_name, &block)
+        if DeploymentStrategies.valid_strategy?(strategy_name.to_sym)
           self.deployment_strategy = DeploymentStrategies.build(strategy_name, self)
+          self.deployment_strategy.configure(&block)
         else
           raise "Unknown deployment strategy '#{strategy_name}'."
         end
