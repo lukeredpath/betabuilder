@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{betabuilder}
-  s.version = "0.1.1"
+  s.version = "0.1.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Luke Redpath"]
-  s.date = %q{2010-11-02}
+  s.date = %q{2010-11-05}
   s.email = %q{luke@lukeredpath.co.uk}
   s.extra_rdoc_files = ["README.md"]
   s.files = ["LICENSE", "README.md", "lib/beta_builder/archived_build.rb", "lib/beta_builder.rb", "lib/betabuilder.rb"]
@@ -23,10 +23,13 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<CFPropertyList>, ["~> 2.0.0"])
+      s.add_runtime_dependency(%q<uuid>, ["~> 2.3.1"])
     else
       s.add_dependency(%q<CFPropertyList>, ["~> 2.0.0"])
+      s.add_dependency(%q<uuid>, ["~> 2.3.1"])
     end
   else
     s.add_dependency(%q<CFPropertyList>, ["~> 2.0.0"])
+    s.add_dependency(%q<uuid>, ["~> 2.3.1"])
   end
 end
