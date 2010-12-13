@@ -72,3 +72,9 @@ task :release => :package do
   gem_path = File.join('pkg', spec.file_name)
   system "gem push #{gem_path}"
 end
+
+desc 'Build and install the gem'
+task :install => :package do
+  gem_path = File.join('pkg', spec.file_name)
+  system("gem install #{gem_path}")
+end
