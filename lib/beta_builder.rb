@@ -14,7 +14,6 @@ module BetaBuilder
         :auto_archive => false,
         :archive_path  => File.expand_path("~/Library/MobileDevice/Archived Applications/")
       )
-      @deployment_strategy = DeploymentStrategies::Web.new(@configuration)
       yield @configuration if block_given?
       define
     end
@@ -51,6 +50,14 @@ module BetaBuilder
       def remote_installation_path
         File.join(remote_directory, target.downcase)
       end
+      
+      def deploy_using(strategy_name)
+        if DeploymentStrategies.valid?(strategy_name.to_sym)
+          self.deployment_strategy = DeploymentStrategies.build(strategy_name, self)
+        else
+          raise "Unknown deployment strategy '#{strategy_name}'."
+        end
+      end
     end
     
     private
@@ -82,10 +89,12 @@ module BetaBuilder
           FileUtils.mv("pkg/#{@configuration.ipa_name}", "pkg/dist")
         end
         
-        desc "Deploy the beta to your server"
-        task :deploy => :package do
-          @deployment_strategy.prepare
-          @deployment_strategy.deploy
+        if @configuration.deployment_strategy
+          desc "Deploy the beta to your server"
+          task :deploy => :package do
+            @configuration.deployment_strategy.prepare
+            @configuration.deployment_strategy.deploy
+          end
         end
         
         desc "Build and archive the app"
