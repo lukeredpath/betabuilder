@@ -31,6 +31,8 @@ spec = Gem::Specification.new do |s|
   # relevant versions
   s.add_dependency("CFPropertyList", "~> 2.0.0")
   s.add_dependency('uuid', "~> 2.3.1")
+  s.add_dependency('rest-client', '~> 1.6.1')
+  s.add_dependency('json', '~> 1.4.6')
 
   # If your tests use any gems, include them here
   # s.add_development_dependency("mocha") # for example

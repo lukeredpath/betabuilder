@@ -1,5 +1,3 @@
-require 'beta_builder/deployment_strategies/web'
-
 module BetaBuilder
   module DeploymentStrategies
     def self.valid_strategy?(strategy_name)
@@ -9,12 +7,32 @@ module BetaBuilder
     def self.build(strategy_name, configuration)
       strategies[strategy_name.to_sym].new(configuration)
     end
+    
+    class Strategy
+      def initialize(configuration)
+        @configuration = configuration
+        
+        if respond_to?(:extended_configuration_for_strategy)
+          @configuration.class_eval(&extended_configuration_for_strategy)
+        end
+      end
+      
+      def configure(&block)
+        yield @configuration
+      end
+      
+      def prepare
+      end
+    end
 
     private
 
     def self.strategies
-      {:web => Web}
+      {:web => Web, :testflight => TestFlight}
     end
   end
 end
+
+require 'beta_builder/deployment_strategies/web'
+require 'beta_builder/deployment_strategies/testflight'
 

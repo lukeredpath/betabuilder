@@ -1,11 +1,6 @@
 module BetaBuilder
   module DeploymentStrategies
-    class Web
-      def initialize(configuration)
-        @configuration = configuration
-        @configuration.class_eval(&extended_configuration_for_strategy)
-      end
-      
+    class Web < Strategy
       def extended_configuration_for_strategy
         proc do
           def deployment_url
@@ -20,10 +15,6 @@ module BetaBuilder
             File.join(remote_directory, target.downcase)
           end
         end
-      end
-
-      def configure(&block)
-        yield @configuration
       end
       
       def prepare

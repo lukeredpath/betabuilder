@@ -39,6 +39,14 @@ module BetaBuilder
         "#{built_app_path}.dSYM"
       end
       
+      def dist_path
+        File.join("pkg/dist")
+      end
+      
+      def ipa_path
+        File.join(dist_path, ipa_name)
+      end
+      
       def deploy_using(strategy_name, &block)
         if DeploymentStrategies.valid_strategy?(strategy_name.to_sym)
           self.deployment_strategy = DeploymentStrategies.build(strategy_name, self)
@@ -81,6 +89,12 @@ module BetaBuilder
         if @configuration.deployment_strategy
           desc "Deploy the beta to your server"
           task :deploy => :package do
+            @configuration.deployment_strategy.prepare
+            @configuration.deployment_strategy.deploy
+          end
+          
+          desc "Deploy the last build"
+          task :redeploy do
             @configuration.deployment_strategy.prepare
             @configuration.deployment_strategy.deploy
           end
