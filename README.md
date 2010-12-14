@@ -84,7 +84,7 @@ You will to configure betabuilder to use the `web` deployment strategy with some
       web.remote_directory = "/remote/path/to/deployment/directory"
     end
     
-The `deploy\_to` setting specifies the URL that your app will be published to. The `remote\_host` setting is the SSH host that will be used to copy the files to your server using SCP. Finally, the `remote\_directory` setting is the path to the location on your server that files will be uploaded to. You will need to configure any virtual hosts on your server to make this work.
+The `deploy_to` setting specifies the URL that your app will be published to. The `remote_host` setting is the SSH host that will be used to copy the files to your server using SCP. Finally, the `remote_directory` setting is the path to the location to your server that files will be uploaded to. You will need to configure any virtual hosts on your server to make this work.
 
 ## License
 
