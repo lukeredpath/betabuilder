@@ -8,7 +8,9 @@ module BetaBuilder
       
       def extended_configuration_for_strategy
         proc do
-
+          def generate_release_notes(&block)
+            self.release_notes = yield if block_given?
+          end
         end
       end
       
@@ -38,6 +40,10 @@ module BetaBuilder
       private
       
       def get_notes
+        @configuration.release_notes || get_notes_using_prompt
+      end
+      
+      def get_notes_using_prompt
         puts "Enter the release notes for this build (hit enter twice when done):\n"
         gets_until_match(/\n{2}$/).strip
       end

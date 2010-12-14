@@ -7,20 +7,20 @@ module BetaBuilder
     def self.build(strategy_name, configuration)
       strategies[strategy_name.to_sym].new(configuration)
     end
-    
+
     class Strategy
       def initialize(configuration)
         @configuration = configuration
-        
+
         if respond_to?(:extended_configuration_for_strategy)
-          @configuration.class_eval(&extended_configuration_for_strategy)
+          @configuration.instance_eval(&extended_configuration_for_strategy)
         end
       end
-      
+
       def configure(&block)
         yield @configuration
       end
-      
+
       def prepare
       end
     end
