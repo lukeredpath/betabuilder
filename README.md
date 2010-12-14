@@ -33,30 +33,58 @@ Because BetaBuilder is a Rake task library, you do not need to define any tasks 
 
       # the Xcode configuration profile
       config.configuration = "Adhoc" 
-      
-      # where the distribution files will be uploaded to
-      config.deploy_to = "http://yourwebsite.com/betas/"
     end
     
 Now, if you run `rake -T` in Terminal.app in the root of your project, the available tasks will be printed with a brief description of each one:
 
     rake beta:build     # Build the beta release of the app
-    rake beta:deploy    # Deploy the beta to your server
     rake beta:package   # Package the beta release as an IPA file
 
-To deploy a beta to your server, some additional configuration is needed (see the next section).
+To deploy your beta to your testers, some additional configuration is needed (see the next section).
 
 Most of the time, you'll not need to run the `beta:build` task directly; it will be run automatically as a dependency of `beta:package`. Upon running this task, your ad-hoc build will be packaged into an IPA file and will be saved in ${PROJECT_ROOT}/pkg/dist, along with a HTML index file and the manifest file needed for over-the-air installation.
 
 If you are not using the automatic deployment task, you will need to upload the contents of the pkg/dist directory to your server.
 
-## Automatic deployment
+## Automatic deployment with deployment strategies
 
-BetaBuilder also comes with a (rather rudimentary) automatic deployment task that uses SCP so you will need SSH access to your server and appropriate permissions to use it. You will also need one extra line of configuration in your Rakefile, specifying the path on the remote server where the files will be copied to:
+BetaBuilder allows you to deploy your built package using it's extensible deployment strategy system; the gem currently comes with support for simple web-based deployment or uploading to [TestFlightApp.com](http://www.testflightapp.com). Eventually, you will be able to write your own custom deployment strategies if neither of these are suitable for your needs.
 
-    config.remote_directory = "/var/www/yourwebsite.com/betas"
+### Deploying your app with TestFlight
+
+By far the easiest way to get your beta release into the hands of your testers is using the excellent [TestFlight service](http://testflightapp.com/), although at the time of writing it is still in private beta. You can use TestFlight to manage your beta testers and notify them of new releases instantly.
+
+TestFlight provides an upload API and betabuilder uses that to provide a 'testflight' upload strategy. This strategy requires two pieces of information: your API token and your team token:
+
+    config.deploy_using(:testflight) do |tf|
+      tf.api_token  = "YOUR_API_TOKEN"
+      tf.team_token = "YOUR_TEAM_TOKEN"
+    end
     
-Now, instead of using the `beta:package` task, you can run the `beta:deploy` task instead. This task will run the package task as a dependency and upload the pkg/dist directory to the remote directory you have configured (again, you will need to ensure that you have the correct permissions for this to work).
+Now, instead of using the `beta:package` task, you can run the `beta:deploy` task instead. This task will run the package task as a dependency and upload the generated IPA file to TestFlight. 
+
+You will be prompted to enter the release notes for the build; TestFlight requires these to inform your testers of what has changed in this build. Alternatively, if you have a way of generating the release notes automatically (for instance, using a CHANGELOG file or a git log command), you can specify a block that will be called at runtime - you can do whatever you want in this block, as long as you return a string which will be used as the release notes, e.g.
+
+    config.deploy_using(:testflight) do |tf|
+      ...
+      tf.generate_release_notes do
+        # return release notes here
+      end
+    end
+
+### Deploying to your own server
+
+BetaBuilder also comes with a rather rudimentary web-based deployment task that uses SCP, so you will need SSH access to your server and appropriate permissions to use it. 
+
+You will to configure betabuilder to use the 'web' deployment strategy with some additional configuration
+
+    config.deploy_using(:web) do |web|
+      web.deploy_to = "http://beta.myserver.co.uk/myapp"
+      web.remote_host = "myserver.com"
+      web.remote_directory = "/remote/path/to/deployment/directory"
+    end
+    
+The 'deploy\_to' setting specifies the URL that your app will be published to. The 'remote\_host' setting is the SSH host that will be used to copy the files to your server using SCP. Finally, the 'remote\_directory' setting is the path to the location on your server that files will be uploaded to. You will need to configure any virtual hosts on your server to make this work.
 
 ## License
 
