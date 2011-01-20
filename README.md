@@ -46,6 +46,13 @@ Most of the time, you'll not need to run the `beta:build` task directly; it will
 
 If you are not using the automatic deployment task, you will need to upload the contents of the pkg/dist directory to your server.
 
+To use a namespace other than "beta" for the generated tasks, simply pass in your chosen namespace to BetaBuilder::Tasks.new:
+
+    BetaBuilder::Tasks.new(:my_custom_namespace) do |config|
+    end
+    
+This lets you set up different sets of BetaBuilder tasks for different configurations in the same Rakefile (e.g. a production and staging build).
+
 ## Automatic deployment with deployment strategies
 
 BetaBuilder allows you to deploy your built package using it's extensible deployment strategy system; the gem currently comes with support for simple web-based deployment or uploading to [TestFlightApp.com](http://www.testflightapp.com). Eventually, you will be able to write your own custom deployment strategies if neither of these are suitable for your needs.
