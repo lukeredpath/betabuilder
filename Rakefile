@@ -80,3 +80,19 @@ task :install => :package do
   gem_path = File.join('pkg', spec.file_name)
   system("gem install #{gem_path}")
 end
+
+# BetaBuilder tasks for testing
+
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), *%w[lib]))
+require 'rubygems'
+require 'betabuilder'
+
+BetaBuilder::Tasks.new do |config|
+  config.target = "TestApp"
+  config.configuration = "Test" 
+end
+
+BetaBuilder::Tasks.new(:custom_namespace) do |config|
+  config.target = "TestApp"
+  config.configuration = "Custom" 
+end
