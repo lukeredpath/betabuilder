@@ -7,13 +7,14 @@ require 'beta_builder/deployment_strategies'
 
 module BetaBuilder
   class Tasks < ::Rake::TaskLib
-    def initialize(&block)
+    def initialize(namespace = :beta, &block)
       @configuration = Configuration.new(
         :configuration => "Adhoc",
         :build_dir => "build",
         :auto_archive => false,
         :archive_path  => File.expand_path("~/Library/MobileDevice/Archived Applications/")
       )
+      @namespace = namespace
       yield @configuration if block_given?
       define
     end
@@ -60,7 +61,7 @@ module BetaBuilder
     private
     
     def define
-      namespace :beta do
+      namespace(@namespace) do
         desc "Build the beta release of the app"
         task :build => :clean do
           system("xcodebuild #{@configuration.build_arguments} build")
