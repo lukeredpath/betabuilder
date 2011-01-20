@@ -13,7 +13,7 @@ spec = Gem::Specification.new do |s|
 
   # Change these as appropriate
   s.name              = "betabuilder"
-  s.version           = "0.2.0"
+  s.version           = "0.2.1"
   s.summary           = "A set of Rake tasks and utilities for managing iOS ad-hoc builds"
   s.author            = "Luke Redpath"
   s.email             = "luke@lukeredpath.co.uk"
@@ -24,7 +24,7 @@ spec = Gem::Specification.new do |s|
   s.rdoc_options      = %w(--main README.md)
 
   # Add any extra files to include in the gem
-  s.files             = %w(LICENSE README.md) + Dir.glob("{lib/**/*}")
+  s.files             = %w(CHANGES.md LICENSE README.md) + Dir.glob("{lib/**/*}")
   s.require_paths     = ["lib"]
 
   # If you want to depend on other gems, add them here, along with any
