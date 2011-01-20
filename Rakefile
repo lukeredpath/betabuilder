@@ -20,7 +20,7 @@ spec = Gem::Specification.new do |s|
   s.homepage          = "http://github.com/lukeredpath/betabuilder"
 
   s.has_rdoc          = false
-  s.extra_rdoc_files  = %w(README.md)
+  s.extra_rdoc_files  = %w(README.md LICENSE CHANGES.md)
   s.rdoc_options      = %w(--main README.md)
 
   # Add any extra files to include in the gem
