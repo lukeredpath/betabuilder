@@ -1,5 +1,7 @@
 require 'rest_client'
 require 'json'
+require 'tmpdir'
+require 'fileutils'
 
 module BetaBuilder
   module DeploymentStrategies
@@ -41,12 +43,19 @@ module BetaBuilder
       private
       
       def get_notes
-        @configuration.release_notes || get_notes_using_prompt
+        @configuration.release_notes || get_notes_using_editor
       end
       
-      def get_notes_using_prompt
-        puts "Enter the release notes for this build (hit enter twice when done):\n"
-        gets_until_match(/\n{2}$/).strip
+      def get_notes_using_editor
+        dir = Dir.mktmpdir
+        begin
+          filepath = "#{dir}/release_notes"
+          # system("touch #{filepath}")
+          system("#{ENV["EDITOR"]} #{filepath}")
+          notes = File.read(filepath)
+        ensure
+          rm_rf(dir)
+        end
       end
       
       def gets_until_match(pattern, string = "")
