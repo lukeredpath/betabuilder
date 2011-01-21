@@ -90,6 +90,8 @@ require 'betabuilder'
 BetaBuilder::Tasks.new do |config|
   config.target = "TestApp"
   config.configuration = "Test" 
+  config.deploy_using(:web) do
+  end
 end
 
 BetaBuilder::Tasks.new(:custom_namespace) do |config|

@@ -22,6 +22,7 @@ module BetaBuilder
       end
 
       def prepare
+        puts "Nothing to prepare!"
       end
     end
 

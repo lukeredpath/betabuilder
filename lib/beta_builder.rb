@@ -88,9 +88,13 @@ module BetaBuilder
         end
         
         if @configuration.deployment_strategy
-          desc "Deploy the beta to your server"
-          task :deploy => :package do
+          desc "Prepare your app for deployment"
+          task :prepare => :package do
             @configuration.deployment_strategy.prepare
+          end
+          
+          desc "Deploy the beta using your chosen deployment strategy"
+          task :deploy => :prepare do
             @configuration.deployment_strategy.deploy
           end
           
