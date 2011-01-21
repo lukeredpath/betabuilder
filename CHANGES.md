@@ -1,3 +1,6 @@
+## 0.3.2
+* Fixed bug #2 (task fails when no testflight distribution list set)
+
 ## 0.3.1
 * Separate the :deploy task into :prepare and :deploy tasks.
 
