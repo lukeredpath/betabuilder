@@ -1,5 +1,6 @@
 ## HEAD
 * If the user has set the EDITOR environment variable, use it to obtain the TestFlight release notes.
+* Bugfix: TestFlight API now returns a 201 Created response when successful.
 
 ## 0.3.2
 * Fixed bug #2 (task fails when no testflight distribution list set)
