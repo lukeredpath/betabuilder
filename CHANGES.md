@@ -1,3 +1,9 @@
+## 0.3.1
+* Separate the :deploy task into :prepare and :deploy tasks.
+
+## 0.3
+* Added support for distribution lists to the TestFlight deployment strategy
+
 ## 0.2.1
 * Allow the namespace of generated tasks to be customised
 
