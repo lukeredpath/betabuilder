@@ -20,7 +20,7 @@ module BetaBuilder
           :team_token         => @configuration.team_token,
           :file               => File.new(@configuration.ipa_path, 'rb'),
           :notes              => get_notes,
-          :distribution_lists => @configuration.distribution_lists.join(","),
+          :distribution_lists => (@configuration.distribution_lists || []).join(","),
           :notify             => false
         }
         puts "Uploading build to TestFlight..."
