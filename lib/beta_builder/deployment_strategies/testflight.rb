@@ -33,7 +33,7 @@ module BetaBuilder
           response = e.response
         end
         
-        if response.code == 201
+        if (response.code == 201) || (response.code == 200)
           puts "Upload complete."
         else
           puts "Upload failed. (#{response})"
