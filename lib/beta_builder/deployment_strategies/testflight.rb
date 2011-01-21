@@ -16,11 +16,12 @@ module BetaBuilder
       
       def deploy
         payload = {
-          :api_token  => @configuration.api_token,
-          :team_token => @configuration.team_token,
-          :file       => File.new(@configuration.ipa_path, 'rb'),
-          :notes      => get_notes,
-          :notify     => false
+          :api_token          => @configuration.api_token,
+          :team_token         => @configuration.team_token,
+          :file               => File.new(@configuration.ipa_path, 'rb'),
+          :notes              => get_notes,
+          :distribution_lists => @configuration.distribution_lists.join(","),
+          :notify             => false
         }
         puts "Uploading build to TestFlight..."
         

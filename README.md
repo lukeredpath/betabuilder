@@ -78,6 +78,13 @@ You will be prompted to enter the release notes for the build; TestFlight requir
         # return release notes here
       end
     end
+    
+Finally, you can also specify an array of distribution lists that you want to allow access to the build:
+
+    config.deploy_using(:testflight) do |tf|
+      ...
+      tf.distribution_lists = %w{Testers Internal}
+    end
 
 ### Deploying to your own server
 
