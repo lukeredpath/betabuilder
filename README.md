@@ -39,6 +39,13 @@ Now, if you run `rake -T` in Terminal.app in the root of your project, the avail
 
     rake beta:build     # Build the beta release of the app
     rake beta:package   # Package the beta release as an IPA file
+    
+If you use a custom Xcode build directory, rather than the default `${SRCROOT}/build` location, you can configure that too:
+
+    BetaBuilder::Tasks.new do |config|
+      ...
+      config.build_dir = "/path/to/custom/build/dir"
+    end
 
 To deploy your beta to your testers, some additional configuration is needed (see the next section).
 
