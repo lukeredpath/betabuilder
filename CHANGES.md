@@ -1,3 +1,6 @@
+## HEAD
+* If the user has set the EDITOR environment variable, use it to obtain the TestFlight release notes.
+
 ## 0.3.2
 * Fixed bug #2 (task fails when no testflight distribution list set)
 
