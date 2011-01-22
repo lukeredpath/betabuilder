@@ -21,7 +21,7 @@ module BetaBuilder
     
     class Configuration < OpenStruct
       def build_arguments
-        "-target #{target} -configuration #{configuration} -sdk iphoneos"
+        "-target '#{target}' -configuration '#{configuration}' -sdk iphoneos"
       end
       
       def app_name

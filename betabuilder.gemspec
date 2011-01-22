@@ -13,10 +13,11 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/lukeredpath/betabuilder}
   s.rdoc_options = ["--main", "README.md"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.4.1}
+  s.rubygems_version = %q{1.3.7}
   s.summary = %q{A set of Rake tasks and utilities for managing iOS ad-hoc builds}
 
   if s.respond_to? :specification_version then
+    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
