@@ -12,7 +12,7 @@ module BetaBuilder
         :configuration => "Adhoc",
         :build_dir => "build",
         :auto_archive => false,
-        :archive_path  => File.expand_path("~/Library/MobileDevice/Archived Applications/")
+        :archive_path  => File.expand_path("~/Library/Application Support/Developer/Shared/Archived Applications")
       )
       @namespace = namespace
       yield @configuration if block_given?
