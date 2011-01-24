@@ -1,6 +1,8 @@
 ## HEAD
 * If the user has set the EDITOR environment variable, use it to obtain the TestFlight release notes.
 * Bugfix: TestFlight API now returns a 201 Created response when successful.
+* Bugfix: Handle spaces in build artefacts.
+* Updated the default archived build location to match the newest Xcode archived build location.
 
 ## 0.3.2
 * Fixed bug #2 (task fails when no testflight distribution list set)
