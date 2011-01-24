@@ -1,4 +1,4 @@
-## HEAD
+## 0.4
 * If the user has set the EDITOR environment variable, use it to obtain the TestFlight release notes.
 * Bugfix: TestFlight API now returns a 201 Created response when successful.
 * Bugfix: Handle spaces in build artefacts.
