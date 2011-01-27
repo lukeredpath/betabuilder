@@ -2,6 +2,8 @@ require "rubygems"
 require "rake/gempackagetask"
 require "rake/rdoctask"
 
+SITE_ROOT  = "/var/www/projects.lukeredpath.co.uk/betabuilder"
+
 task :default => :package
 
 # This builds the actual gem. For details of what all these options
@@ -79,6 +81,22 @@ desc 'Build and install the gem'
 task :install => :package do
   gem_path = File.join('pkg', spec.file_name)
   system("gem install #{gem_path}")
+end
+
+namespace :website do
+  desc "Deploy to production"
+  task :deploy => [:upload_website]
+
+  desc "Regenerate the site"
+  task :generate do
+    Dir.chdir("website") do
+      system("jekyll")
+    end
+  end
+    
+  task :upload_website => [:generate] do
+    system("rsync -avz --delete website/_site/ lukeredpath.co.uk:#{SITE_ROOT}")
+  end
 end
 
 # BetaBuilder tasks for testing
