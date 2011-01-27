@@ -9,8 +9,8 @@ module Jekyll
     
     def render(context)
       Ultraviolence.convert(super.join, @syntax)
-    rescue
-      "Ultraviolence: Could not render!"
+    rescue StandardError => e
+      "Ultraviolence: Could not render! (#{e})"
     end
   end
   
