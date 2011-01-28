@@ -4,7 +4,7 @@ BetaBuilder is a simple collection of Rake tasks and utilities for managing and 
 
 If you're looking for the OSX BetaBuilder app -- to which this gem owes most of the credit -- you can find it [here on Github](http://github.com/HunterHillegas/iOS-BetaBuilder).
 
-## Motiviation
+## Motivation
 
 The problem with using a GUI app to create the beta packages is that it is yet another manual step in the process of producing an ad-hoc build for your beta testers. It simplifies some steps but it still requires running Build and Archive in Xcode, saving the resulting build as an IPA package, running the Beta Builder app, locating the IPA, filling in the rest of the fields and generating the deployment files. Then you need to upload those files somewhere.
 
