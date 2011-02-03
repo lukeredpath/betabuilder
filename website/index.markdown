@@ -35,6 +35,7 @@ Now, back to the terminal. Run `rake -T` to view a list of the available tasks. 
 
 The task descriptions should be fairly self-explanatory, but you can consider them analogous to the following Xcode operations:
 
+<div class="callout" markdown="1">
 ### `beta:build` 
 This will build your app just as if you had hit **Build** in Xcode, using the `xcodebuild` utility.
 
@@ -45,6 +46,7 @@ You can also configure BetaBuilder to automatically archive each build to avoid 
 
 ### `beta:package` 
 This builds your app and packages it in an IPA file. It is the same as exporting a build from Xcode Organiser and choosing **Save to Disk**. 
+</div>
 
 # Distributing your app
 
@@ -75,6 +77,7 @@ If you now run `rake -T`, you'll see some new tasks:
     rake beta:prepare              # Prepare your app for deployment
     rake beta:redeploy             # Deploy the last build
 
+<div class="callout" markdown="1">
 ### `rake beta:deploy`
 
 This one is self-explanatory. It will build and package your app and deploy it using your configured deployment strategy.
@@ -84,6 +87,7 @@ This one is self-explanatory. It will build and package your app and deploy it u
 If your chosen deployment strategy has an intermediate step, this task will perform that step without actually deploying. The Testflight strategy (see below) has no preparation step. 
 
 For the web strategy, this will create the "payload" ready to upload to your server (the IPA, manifest and index page) but it won't actually do the upload. This is useful if you do not have SSH access to your server and need to upload the package manually (for instance, via FTP or Dropbox).
+</div>
 
 ## Deploying to TestFlight
 

@@ -97,6 +97,12 @@ namespace :website do
   task :upload_website => [:generate] do
     system("rsync -avz --delete website/_site/ lukeredpath.co.uk:#{SITE_ROOT}")
   end
+  
+  task :dev do
+    Dir.chdir("website") do
+      system("jekyll --auto")
+    end
+  end
 end
 
 # BetaBuilder tasks for testing

@@ -2,6 +2,8 @@ auto:        false
 lsi:         false
 server_port: 4000
 pygments:    true
-markdown:    rdiscount
+markdown:    kramdown
+kramdown:
+  parse_block_html: true
 permalink:   /:title.html
 base_url:    http://lukeredpath.co.uk/projects/betabuilder
