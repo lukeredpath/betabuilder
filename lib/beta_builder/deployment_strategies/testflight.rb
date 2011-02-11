@@ -23,7 +23,7 @@ module BetaBuilder
           :file               => File.new(@configuration.ipa_path, 'rb'),
           :notes              => get_notes,
           :distribution_lists => (@configuration.distribution_lists || []).join(","),
-          :notify             => false
+          :notify             => @configuration.notify || false
         }
         puts "Uploading build to TestFlight..."
         
