@@ -81,7 +81,7 @@ module BetaBuilder
           FileUtils.mkdir_p("pkg/Payload")
           FileUtils.mv(@configuration.built_app_path, "pkg/Payload/#{@configuration.app_name}")
           Dir.chdir("pkg") do
-            system("zip -r #{@configuration.ipa_name} Payload")
+            system("zip -r '#{@configuration.ipa_name}' Payload")
           end
           FileUtils.mkdir('pkg/dist')
           FileUtils.mv("pkg/#{@configuration.ipa_name}", "pkg/dist")
