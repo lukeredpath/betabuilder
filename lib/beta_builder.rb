@@ -21,7 +21,11 @@ module BetaBuilder
     
     class Configuration < OpenStruct
       def build_arguments
-        "-target '#{target}' -configuration '#{configuration}' -sdk iphoneos"
+        if workspace
+          "-workspace '#{workspace}' -scheme '#{target}' -configuration '#{configuration}' -sdk iphoneos"
+        else
+          "-target '#{target}' -configuration '#{configuration}' -sdk iphoneos"
+        end
       end
       
       def app_name
