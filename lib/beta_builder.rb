@@ -13,11 +13,15 @@ module BetaBuilder
         :build_dir => "build",
         :auto_archive => false,
         :archive_path  => File.expand_path("~/Library/Application Support/Developer/Shared/Archived Applications"),
-        :xcodebuild_executable => "xcodebuild"
+        :xcodebuild_path => "xcodebuild"
       )
       @namespace = namespace
       yield @configuration if block_given?
       define
+    end
+    
+    def xcodebuild(*args)
+      system("#{@configuration.xcodebuild_path} #{args.join(" ")}")
     end
     
     class Configuration < OpenStruct
@@ -65,11 +69,11 @@ module BetaBuilder
       namespace(@namespace) do
         desc "Build the beta release of the app"
         task :build => :clean do
-          system("#{@configuration.xcodebuild_executable} #{@configuration.build_arguments} build")
+          xcodebuild @configuration.build_arguments, "build"
         end
         
         task :clean do
-          system("#{@configuration.xcodebuild_executable} #{@configuration.build_arguments} clean")
+          xcodebuild @configuration.build_arguments, "clean"
         end
         
         desc "Package the beta release as an IPA file"
