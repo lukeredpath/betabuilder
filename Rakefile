@@ -112,8 +112,9 @@ require 'rubygems'
 require 'betabuilder'
 
 BetaBuilder::Tasks.new do |config|
-  config.target = "TestApp"
-  config.configuration = "Test" 
+  config.project_file_path = File.expand_path("~/Code/mine/squeemote/project/Squeemote.xcodeproj")
+  config.target = "Squeemote"
+  config.configuration = "Adhoc" 
   config.deploy_using(:web) do
   end
 end

@@ -13,7 +13,8 @@ module BetaBuilder
         :build_dir => "build",
         :auto_archive => false,
         :archive_path  => File.expand_path("~/Library/Application Support/Developer/Shared/Archived Applications"),
-        :xcodebuild_path => "xcodebuild"
+        :xcodebuild_path => "xcodebuild",
+        :project_file_path => nil
       )
       @namespace = namespace
       yield @configuration if block_given?
@@ -26,7 +27,8 @@ module BetaBuilder
     
     class Configuration < OpenStruct
       def build_arguments
-        "-target '#{target}' -configuration '#{configuration}' -sdk iphoneos"
+        args = "-target '#{target}' -configuration '#{configuration}' -sdk iphoneos"
+        args << " -project #{project_file_path}" if project_file_path
       end
       
       def app_name

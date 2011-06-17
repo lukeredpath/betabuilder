@@ -1,5 +1,6 @@
 ## 0.4.2
 * Support configurable path to xcodebuild executable
+* Support configurable path to Xcode project file
 
 ## 0.4
 * If the user has set the EDITOR environment variable, use it to obtain the TestFlight release notes.
