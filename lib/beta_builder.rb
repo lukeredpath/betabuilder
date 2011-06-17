@@ -12,7 +12,8 @@ module BetaBuilder
         :configuration => "Adhoc",
         :build_dir => "build",
         :auto_archive => false,
-        :archive_path  => File.expand_path("~/Library/Application Support/Developer/Shared/Archived Applications")
+        :archive_path  => File.expand_path("~/Library/Application Support/Developer/Shared/Archived Applications"),
+        :xcodebuild_executable => "xcodebuild"
       )
       @namespace = namespace
       yield @configuration if block_given?
@@ -64,11 +65,11 @@ module BetaBuilder
       namespace(@namespace) do
         desc "Build the beta release of the app"
         task :build => :clean do
-          system("xcodebuild #{@configuration.build_arguments} build")
+          system("#{@configuration.xcodebuild_executable} #{@configuration.build_arguments} build")
         end
         
         task :clean do
-          system("xcodebuild #{@configuration.build_arguments} clean")
+          system("#{@configuration.xcodebuild_executable} #{@configuration.build_arguments} clean")
         end
         
         desc "Package the beta release as an IPA file"
