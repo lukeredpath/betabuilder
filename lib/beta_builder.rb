@@ -14,7 +14,8 @@ module BetaBuilder
         :auto_archive => false,
         :archive_path  => File.expand_path("~/Library/Application Support/Developer/Shared/Archived Applications"),
         :xcodebuild_path => "xcodebuild",
-        :project_file_path => nil
+        :project_file_path => nil,
+        :xcode4_archive_mode => false
       )
       @namespace = namespace
       yield @configuration if block_given?
