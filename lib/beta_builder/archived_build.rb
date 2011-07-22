@@ -1,5 +1,6 @@
 require 'uuid'
 require 'fileutils'
+require 'CFPropertyList'
 
 module BetaBuilder
   def self.archive(configuration)
@@ -21,6 +22,7 @@ module BetaBuilder
       FileUtils.mkdir(archive_path)
       FileUtils.cp_r(@configuration.built_app_path, archive_path)
       FileUtils.cp_r(@configuration.built_app_dsym_path, archive_path)
+      archive_path
     end
   end
   
@@ -29,13 +31,70 @@ module BetaBuilder
       @configuration = configuration
     end
     
+    def archive_file_name
+      "#{@configuration.archive_name} #{Time.now.strftime('%Y-%m-%d %H.%M')}.xcarchive"
+    end
+    
+    def archive_path_within(path)
+      File.join(path, "#{Time.now.strftime('%Y-%m-%d')}", archive_file_name)
+    end
+    
+    def applications_path
+      File.join("Products", "Applications")
+    end
+    
+    def dsyms_path
+      "dSYMs"
+    end
+    
+    def plist_info_path
+      File.join(@configuration.built_app_path, "Info.plist")
+    end
+    
     def save_to(path)
-      date_path = File.join(path, "#{Time.now.strftime('%Y-%m-%d')}")
-      FileUtils.mkdir_p(date_path)
-      archive_path = File.join(date_path, "#{@configuration.target}.xcarchive")
-      FileUtils.mkdir(archive_path)
-      FileUtils.cp_r(@configuration.built_app_path, archive_path)
-      FileUtils.cp_r(@configuration.built_app_dsym_path, archive_path)
+      archive_path = archive_path_within(path)
+      FileUtils.mkdir_p(archive_path)
+      
+      application_path = File.join(archive_path, applications_path)
+      FileUtils.mkdir_p(application_path)
+      FileUtils.cp_r(@configuration.built_app_path, application_path)
+      
+      dsym_path = File.join(archive_path, dsyms_path)
+      FileUtils.mkdir_p(dsym_path)
+      FileUtils.cp_r(@configuration.built_app_dsym_path, dsym_path)
+      
+      write_plist_to(archive_path)
+      archive_path
+    end
+    
+    private
+    
+    def write_plist_to(path)
+      plist = {
+        "ApplicationProperties" => {
+          "ApplicationPath"             => File.join("Applications", "#{@configuration.app_file_name}.app"),
+          "CFBundleIdentifier"          => metadata["CFBundleIdentifier"], 
+          "CFBundleShortVersionString"  => metadata["CFBundleShortVersionString"], 
+          "IconPaths"                   => metadata["CFBundleIconFiles"].map { |file| File.join("Applications", @configuration.app_file_name, file) }
+        }, 
+        "ArchiveVersion" => 1.0, 
+        "Comment"        => @configuration.release_notes, 
+        "CreationDate"   => Time.now, 
+        "Name"           => @configuration.archive_name, 
+        "SchemeName"     => @configuration.scheme
+      }
+      File.open(File.join(path, "Info.plist"), "w") do |io|
+        io.write plist.to_plist
+      end
+    end
+    
+    def metadata
+      @metadata ||= load_property_list(plist_info_path)
+    end
+    
+    def load_property_list(path)
+      plist = CFPropertyList::List.new(:file => path)
+      CFPropertyList.native_types(plist.value)
     end
   end
 end

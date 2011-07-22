@@ -12,7 +12,7 @@ module BetaBuilder
         :configuration => "Adhoc",
         :build_dir => "build",
         :auto_archive => false,
-        :archive_path  => File.expand_path("~/Library/Application Support/Developer/Shared/Archived Applications"),
+        :archive_path  => File.expand_path("~/Library/Developer/Xcode/Archives"),
         :xcodebuild_path => "xcodebuild",
         :project_file_path => nil,
         :workspace_path => nil,
@@ -41,6 +41,10 @@ module BetaBuilder
           args << " -project #{project_file_path}" if project_file_path
           args
         end
+      end
+      
+      def archive_name
+        app_name || target
       end
       
       def app_file_name
@@ -149,8 +153,10 @@ module BetaBuilder
         
         desc "Build and archive the app"
         task :archive => :build do
+          puts "Archiving build..."
           archive = BetaBuilder.archive(@configuration)
-          archive.save_to(@configuration.archive_path)
+          output_path = archive.save_to(@configuration.archive_path)
+          puts "Archive saved to #{output_path}."
         end
       end
     end
