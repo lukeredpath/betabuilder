@@ -4,7 +4,7 @@ BetaBuilder is a simple collection of Rake tasks and utilities for managing and 
 
 If you're looking for the OSX BetaBuilder app -- to which this gem owes most of the credit -- you can find it [here on Github](http://github.com/HunterHillegas/iOS-BetaBuilder).
 
-**Note: As of release 0.7, support for Xcode 3 is deprecated. Xcode 4 has been out for a year, has got much more stable as of 4.1 on Lion (or 4.2 if you've been using the betas) and it's time to moved on. Generating Xcode 4 friendly archives and builds in this release still needs a bit of configuration but will become much smoother in 0.8 once Xcode 3 support is removed.**
+**Note: As of release 0.7, support for Xcode 3 is deprecated. Xcode 4 has been out for a year, has got much more stable as of 4.1 on Lion (or 4.2 if you've been using the betas) and it's time to move on. Generating Xcode 4 friendly archives and builds in this release still needs a bit of configuration but will become much smoother in 0.8 once Xcode 3 support is removed.**
 
 ## Motivation
 
