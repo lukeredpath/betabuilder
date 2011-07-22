@@ -149,7 +149,7 @@ module BetaBuilder
         
         desc "Build and archive the app"
         task :archive => :build do
-          archive = BetaBuilder::ArchivedBuild.new(@configuration)
+          archive = BetaBuilder.archive(@configuration)
           archive.save_to(@configuration.archive_path)
         end
       end
