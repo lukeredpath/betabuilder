@@ -15,7 +15,11 @@ module BetaBuilder
         :archive_path  => File.expand_path("~/Library/Application Support/Developer/Shared/Archived Applications"),
         :xcodebuild_path => "xcodebuild",
         :project_file_path => nil,
-        :xcode4_archive_mode => false
+        :workspace_path => nil,
+        :scheme => nil,
+        :app_name => nil,
+        :xcode4_archive_mode => false,
+        :skip_clean => false
       )
       @namespace = namespace
       yield @configuration if block_given?
@@ -23,25 +27,53 @@ module BetaBuilder
     end
     
     def xcodebuild(*args)
-      system("#{@configuration.xcodebuild_path} #{args.join(" ")}")
+      # we're using tee as we still want to see our build output on screen
+      system("#{@configuration.xcodebuild_path} #{args.join(" ")} | tee build.output")
     end
     
     class Configuration < OpenStruct
       def build_arguments
-        args = "-target '#{target}' -configuration '#{configuration}' -sdk iphoneos"
-        args << " -project #{project_file_path}" if project_file_path
+        if workspace_path
+          raise "A scheme is required if building from a workspace" unless scheme
+          "-workspace '#{workspace_path}' -scheme '#{scheme}' -configuration '#{configuration}'"
+        else
+          args = "-target '#{target}' -configuration '#{configuration}' -sdk iphoneos"
+          args << " -project #{project_file_path}" if project_file_path
+          args
+        end
       end
       
-      def app_name
-        "#{target}.app"
+      def app_file_name
+        if app_name
+          "#{app_name}.app"
+        else
+          "#{target}.app"
+        end
       end
       
       def ipa_name
-        "#{target}.ipa"
+        if app_name
+          "#{app_name}.ipa"
+        else
+          "#{target}.ipa"
+        end
       end
       
       def built_app_path
-        "#{build_dir}/#{configuration}-iphoneos/#{app_name}"
+        if build_dir == :derived
+          "#{derived_build_dir_from_build_output}/#{configuration}-iphoneos/#{app_file_name}"
+        else
+          "#{build_dir}/#{configuration}-iphoneos/#{app_file_name}"
+        end
+      end
+      
+      def derived_build_dir_from_build_output
+        output = File.read("build.output")
+        
+        # yes, this is truly horrible, but unless somebody else can find a better way...
+        reference = output.split("\n").grep(/Xcode\/DerivedData\/#{scheme}-(.*)/).first.split(" ").last
+        derived_data_directory = reference.split("/Build/Products").first
+        "#{derived_data_directory}/Build/Products/"
       end
       
       def built_app_dsym_path
@@ -76,7 +108,9 @@ module BetaBuilder
         end
         
         task :clean do
-          xcodebuild @configuration.build_arguments, "clean"
+          unless @configuration.skip_clean
+            xcodebuild @configuration.build_arguments, "clean"
+          end
         end
         
         desc "Package the beta release as an IPA file"
@@ -87,7 +121,7 @@ module BetaBuilder
                     
           FileUtils.rm_rf('pkg') && FileUtils.mkdir_p('pkg')
           FileUtils.mkdir_p("pkg/Payload")
-          FileUtils.mv(@configuration.built_app_path, "pkg/Payload/#{@configuration.app_name}")
+          FileUtils.mv(@configuration.built_app_path, "pkg/Payload/#{@configuration.app_file_name}")
           Dir.chdir("pkg") do
             system("zip -r '#{@configuration.ipa_name}' Payload")
           end
