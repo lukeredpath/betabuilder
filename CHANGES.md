@@ -1,4 +1,15 @@
-## 0.4.2
+## 0.7.0
+* Much improved Xcode 4 support.
+* Generate Xcode 4 style archives using the :xcode4_archive_mode
+* Xcode 4 style archives appear in Xcode organiser complete with your release notes.
+* Added a :skip_clean option to skip cleaning when building
+* Allow the app name to be explicitly set using :app_name
+* WARNING: Xcode 3 support is officially deprecated as of this release!
+
+## 0.6.0
+* Support Xcode 4 workspaces and schemes.
+
+## 0.5.0
 * Support configurable path to xcodebuild executable
 * Support configurable path to Xcode project file
 
