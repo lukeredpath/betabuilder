@@ -4,6 +4,8 @@ BetaBuilder is a simple collection of Rake tasks and utilities for managing and 
 
 If you're looking for the OSX BetaBuilder app -- to which this gem owes most of the credit -- you can find it [here on Github](http://github.com/HunterHillegas/iOS-BetaBuilder).
 
+**Note: As of release 0.7, support for Xcode 3 is deprecated. Xcode 4 has been out for a year, has got much more stable as of 4.1 on Lion (or 4.2 if you've been using the betas) and it's time to moved on. Generating Xcode 4 friendly archives and builds in this release still needs a bit of configuration but will become much smoother in 0.8 once Xcode 3 support is removed.**
+
 ## Motivation
 
 The problem with using a GUI app to create the beta packages is that it is yet another manual step in the process of producing an ad-hoc build for your beta testers. It simplifies some steps but it still requires running Build and Archive in Xcode, saving the resulting build as an IPA package, running the Beta Builder app, locating the IPA, filling in the rest of the fields and generating the deployment files. Then you need to upload those files somewhere.
@@ -59,6 +61,28 @@ To use a namespace other than "beta" for the generated tasks, simply pass in you
     end
     
 This lets you set up different sets of BetaBuilder tasks for different configurations in the same Rakefile (e.g. a production and staging build).
+
+## Xcode 4 support
+
+Betabuilder works with Xcode 4, but you may need to tweak your task configuration slightly. The most important change you will need to make is the build directory location, unless you have configured Xcode 4 to use the "build" directory relative to your project, as in Xcode 3.
+
+If you are using the Xcode derived data directory for your builds, then you will need to specify this. Betabuilder will then scan your build log to determine the path to the automatically generated build directory that Xcode is using for your project.
+
+    config.build_dir = :derived
+    
+This will become the default in 0.8.
+
+If you wish to generate archives for your Xcode 4 project, you will need to enable this. This will become the default in future once Xcode 3 support is dropped (deprecated in 0.7):
+
+    config.xcode4_archive_mode = true
+    
+If you are working with an Xcode 4 workspace instead of a project file, you will need to configure this too:
+
+    config.workspace_path = "MyWorkspace.xcworkspace"
+    config.scheme         = "My App Scheme"
+    config.app_name       = "MyApp"
+    
+If you are using a workspace, then you must specify the scheme. You can still specify the build configuration (e.g. Release).
 
 ## Automatic deployment with deployment strategies
 
