@@ -48,6 +48,7 @@ module BetaBuilder
       end
       
       def app_file_name
+        raise ArgumentError, "app_name or target must be set in the BetaBuilder configuration block" if app_name.nil? && target.nil?
         if app_name
           "#{app_name}.app"
         else
@@ -75,8 +76,8 @@ module BetaBuilder
         output = File.read("build.output")
         
         # yes, this is truly horrible, but unless somebody else can find a better way...
-        reference = output.split("\n").grep(/Xcode\/DerivedData\/#{scheme}-(.*)/).first.split(" ").last
-        derived_data_directory = reference.split("/Build/Products").first
+        reference = output.split("\n").grep(/Xcode\/DerivedData\/(.*)-(.*)/).first.split(" ").last
+        derived_data_directory = reference.split("/Build/Products/").first
         "#{derived_data_directory}/Build/Products/"
       end
       
