@@ -1,3 +1,6 @@
+## 0.7.1
+* Fixed a problem with detecting the Xcode 4 derived data directory.
+
 ## 0.7.0
 * Much improved Xcode 4 support.
 * Generate Xcode 4 style archives using the :xcode4_archive_mode

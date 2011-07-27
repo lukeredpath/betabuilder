@@ -1,6 +1,6 @@
 require "rubygems"
-require "rake/gempackagetask"
-require "rake/rdoctask"
+require "rubygems/package_task"
+require "rdoc/task"
 
 SITE_ROOT  = "/var/www/projects.lukeredpath.co.uk/betabuilder"
 
@@ -15,7 +15,7 @@ spec = Gem::Specification.new do |s|
 
   # Change these as appropriate
   s.name              = "betabuilder"
-  s.version           = "0.7.0"
+  s.version           = "0.7.1"
   s.summary           = "A set of Rake tasks and utilities for managing iOS ad-hoc builds"
   s.author            = "Luke Redpath"
   s.email             = "luke@lukeredpath.co.uk"
@@ -47,7 +47,7 @@ end
 #
 # To publish your gem online, install the 'gemcutter' gem; Read more 
 # about that here: http://gemcutter.org/pages/gem_docs
-Rake::GemPackageTask.new(spec) do |pkg|
+Gem::PackageTask.new(spec) do |pkg|
   pkg.gem_spec = spec
 end
 
@@ -60,7 +60,7 @@ end
 task :package => :gemspec
 
 # Generate documentation
-Rake::RDocTask.new do |rd|
+RDoc::Task.new do |rd|
   rd.main = "README.md"
   rd.rdoc_files.include("README.md", "lib/**/*.rb")
   rd.rdoc_dir = "rdoc"
