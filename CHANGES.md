@@ -1,3 +1,6 @@
+## 0.7.2
+* Handle missing values in Xcode archive plist.
+
 ## 0.7.1
 * Fixed a problem with detecting the Xcode 4 derived data directory.
 
