@@ -84,7 +84,7 @@ module BetaBuilder
         "SchemeName"     => @configuration.scheme
       }
       File.open(File.join(path, "Info.plist"), "w") do |io|
-        io.write plist.to_plist
+        io.write plist.to_plist(:convert_unknown_to_string => true)
       end
     end
     
