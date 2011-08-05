@@ -1,3 +1,6 @@
+## 0.7.3
+* Made the Xcode derived data directory more robust by grepping for the Validate line in the log.
+
 ## 0.7.2
 * Handle missing values in Xcode archive plist.
 
