@@ -19,7 +19,9 @@ module BetaBuilder
         :scheme => nil,
         :app_name => nil,
         :xcode4_archive_mode => false,
-        :skip_clean => false
+        :skip_clean => false,
+        :verbose => false,
+        :dry_run => false
       )
       @namespace = namespace
       yield @configuration if block_given?

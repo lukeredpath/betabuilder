@@ -17,15 +17,25 @@ module BetaBuilder
       end
       
       def deploy
+        release_notes = get_notes
         payload = {
           :api_token          => @configuration.api_token,
           :team_token         => @configuration.team_token,
           :file               => File.new(@configuration.ipa_path, 'rb'),
-          :notes              => get_notes,
+          :notes              => release_notes,
           :distribution_lists => (@configuration.distribution_lists || []).join(","),
           :notify             => @configuration.notify || false
         }
         puts "Uploading build to TestFlight..."
+        if @configuration.verbose
+          puts "ipa path: #{@configuration.ipa_path}"
+          puts "release notes: #{release_notes}"
+        end
+        
+        if @configuration.dry_run 
+          puts '** Dry Run - No action here! **'
+          return
+        end
         
         begin
           response = RestClient.post(ENDPOINT, payload, :accept => :json)
