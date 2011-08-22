@@ -27,13 +27,17 @@ module BetaBuilder
       yield @configuration if block_given?
       define
     end
-    
+        
     def xcodebuild(*args)
       # we're using tee as we still want to see our build output on screen
       system("#{@configuration.xcodebuild_path} #{args.join(" ")} | tee build.output")
     end
     
     class Configuration < OpenStruct
+      def release_notes_text
+        return release_notes.call if release_notes.is_a? Proc
+        release_notes
+      end
       def build_arguments
         if workspace_path
           raise "A scheme is required if building from a workspace" unless scheme

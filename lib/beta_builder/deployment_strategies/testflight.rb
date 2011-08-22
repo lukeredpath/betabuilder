@@ -11,7 +11,7 @@ module BetaBuilder
       def extended_configuration_for_strategy
         proc do
           def generate_release_notes(&block)
-            self.release_notes = yield if block_given?
+            self.release_notes = block if block
           end
         end
       end
@@ -53,7 +53,8 @@ module BetaBuilder
       private
       
       def get_notes
-        @configuration.release_notes || get_notes_using_editor || get_notes_using_prompt
+        notes = @configuration.release_notes_text
+        notes || get_notes_using_editor || get_notes_using_prompt
       end
       
       def get_notes_using_editor
