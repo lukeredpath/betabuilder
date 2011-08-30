@@ -72,7 +72,7 @@ module BetaBuilder
     def write_plist_to(path)
       plist = {
         "ApplicationProperties" => {
-          "ApplicationPath"             => File.join("Applications", "#{@configuration.app_file_name}.app"),
+          "ApplicationPath"             => File.join("Applications", @configuration.app_file_name),
           "CFBundleIdentifier"          => metadata["CFBundleIdentifier"], 
           "CFBundleShortVersionString"  => metadata["CFBundleShortVersionString"], 
           "IconPaths"                   => metadata["CFBundleIconFiles"].map { |file| File.join("Applications", @configuration.app_file_name, file) }
