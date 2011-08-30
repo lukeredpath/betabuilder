@@ -121,7 +121,7 @@ module BetaBuilder
         desc "Package the beta release as an IPA file"
         task :package => :build do
           if @configuration.auto_archive
-            Rake::Task['beta:archive'].invoke
+            Rake::Task["#{@namespace}:archive"].invoke
           end
                     
           FileUtils.rm_rf('pkg') && FileUtils.mkdir_p('pkg')
