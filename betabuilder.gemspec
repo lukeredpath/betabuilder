@@ -6,10 +6,10 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Luke Redpath"]
-  s.date = %q{2011-08-05}
+  s.date = %q{2011-08-31}
   s.email = %q{luke@lukeredpath.co.uk}
   s.extra_rdoc_files = ["README.md", "LICENSE", "CHANGES.md"]
-  s.files = ["CHANGES.md", "LICENSE", "README.md", "lib/beta_builder/archived_build.rb", "lib/beta_builder/deployment_strategies/testflight.rb", "lib/beta_builder/deployment_strategies/web.rb", "lib/beta_builder/deployment_strategies.rb", "lib/beta_builder.rb", "lib/betabuilder.rb"]
+  s.files = ["CHANGES.md", "LICENSE", "README.md", "lib/beta_builder/archived_build.rb", "lib/beta_builder/deployment_strategies/testflight.rb", "lib/beta_builder/deployment_strategies/web.rb", "lib/beta_builder/deployment_strategies.rb", "lib/beta_builder/documentation.rb", "lib/beta_builder.rb", "lib/betabuilder.rb"]
   s.homepage = %q{http://github.com/lukeredpath/betabuilder}
   s.rdoc_options = ["--main", "README.md"]
   s.require_paths = ["lib"]

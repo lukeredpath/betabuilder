@@ -131,6 +131,18 @@ You will to configure betabuilder to use the `web` deployment strategy with some
     
 The `deploy_to` setting specifies the URL that your app will be published to. The `remote_host` setting is the SSH host that will be used to copy the files to your server using SCP. Finally, the `remote_directory` setting is the path to the location to your server that files will be uploaded to. You will need to configure any virtual hosts on your server to make this work.
 
+### Generating documentation
+
+Provided you have added documentation comments as specified by the [Appledoc tool](http://www.gentlebytes.com/home/appledocapp/appledoc-documentation-comments/), you can generate the documentation in the following way:
+
+    $ rake docs:generate
+
+You can have a look at the generated documents in `Docs/API`. If you like what you see, you can also install the docset for use within Xcode:
+
+    $ rake docs:install
+
+By default, the task expects to find the appledoc binary in `/usr/local/bin`.
+
 ## License
 
 This code is licensed under the MIT license.

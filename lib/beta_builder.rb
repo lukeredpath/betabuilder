@@ -4,6 +4,7 @@ require 'fileutils'
 require 'cfpropertylist'
 require 'beta_builder/archived_build'
 require 'beta_builder/deployment_strategies'
+require 'beta_builder/documentation'
 
 module BetaBuilder
   class Tasks < ::Rake::TaskLib
@@ -28,6 +29,7 @@ module BetaBuilder
     
     def xcodebuild(*args)
       # we're using tee as we still want to see our build output on screen
+      puts "#{@configuration.xcodebuild_path} #{args.join(" ")} | tee build.output"
       system("#{@configuration.xcodebuild_path} #{args.join(" ")} | tee build.output")
     end
     
@@ -37,7 +39,7 @@ module BetaBuilder
           raise "A scheme is required if building from a workspace" unless scheme
           "-workspace '#{workspace_path}' -scheme '#{scheme}' -configuration '#{configuration}'"
         else
-          args = "-target '#{target}' -configuration '#{configuration}' -sdk iphoneos"
+          args = "-target '#{target}' -configuration '#{configuration}' -sdk iphoneos -verbose VALIDATE_PRODUCT=YES"
           args << " -project #{project_file_path}" if project_file_path
           args
         end
@@ -71,10 +73,10 @@ module BetaBuilder
           "#{build_dir}/#{configuration}-iphoneos/#{app_file_name}"
         end
       end
-      
+
       def derived_build_dir_from_build_output
         output = File.read("build.output")
-        
+
         # yes, this is truly horrible, but unless somebody else can find a better way...
         reference = output.split("\n").grep(/^Validate(.*)\/Xcode\/DerivedData\/(.*)-(.*)/).first.split(" ").last
         derived_data_directory = reference.split("/Build/Products/").first
@@ -158,6 +160,20 @@ module BetaBuilder
           archive = BetaBuilder.archive(@configuration)
           output_path = archive.save_to(@configuration.archive_path)
           puts "Archive saved to #{output_path}."
+        end
+      end
+        
+      namespace(:docs) do
+        desc "Generate documentation with Appledoc"
+        task :generate do
+          appledoc = AppleDoc.new(@configuration)
+          appledoc.generate
+        end
+        
+        desc "Generate & install a docset into Xcode from the current sources"
+        task :install do
+          appledoc = AppleDoc.new(@configuration)
+          appledoc.install
         end
       end
     end
