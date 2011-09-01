@@ -18,6 +18,7 @@ module BetaBuilder
         :workspace_path => nil,
         :scheme => nil,
         :app_name => nil,
+        :arch => nil,
         :xcode4_archive_mode => false,
         :skip_clean => false,
         :verbose => false,
@@ -27,28 +28,32 @@ module BetaBuilder
       yield @configuration if block_given?
       define
     end
-        
+
     def xcodebuild(*args)
       # we're using tee as we still want to see our build output on screen
       system("#{@configuration.xcodebuild_path} #{args.join(" ")} | tee build.output")
     end
-    
+
     class Configuration < OpenStruct
       def release_notes_text
         return release_notes.call if release_notes.is_a? Proc
         release_notes
       end
       def build_arguments
+        args = ""
         if workspace_path
           raise "A scheme is required if building from a workspace" unless scheme
-          "-workspace '#{workspace_path}' -scheme '#{scheme}' -configuration '#{configuration}'"
+          args << "-workspace '#{workspace_path}' -scheme '#{scheme}' -configuration '#{configuration}'"
         else
           args = "-target '#{target}' -configuration '#{configuration}' -sdk iphoneos"
           args << " -project #{project_file_path}" if project_file_path
-          args
         end
+
+        args << " -arch \"#{arch}\"" unless arch.nil?
+
+        args
       end
-      
+
       def archive_name
         app_name || target
       end
