@@ -11,21 +11,31 @@ module BetaBuilder
       def extended_configuration_for_strategy
         proc do
           def generate_release_notes(&block)
-            self.release_notes = yield if block_given?
+            self.release_notes = block if block
           end
         end
       end
       
       def deploy
+        release_notes = get_notes
         payload = {
           :api_token          => @configuration.api_token,
           :team_token         => @configuration.team_token,
           :file               => File.new(@configuration.ipa_path, 'rb'),
-          :notes              => get_notes,
+          :notes              => release_notes,
           :distribution_lists => (@configuration.distribution_lists || []).join(","),
           :notify             => @configuration.notify || false
         }
         puts "Uploading build to TestFlight..."
+        if @configuration.verbose
+          puts "ipa path: #{@configuration.ipa_path}"
+          puts "release notes: #{release_notes}"
+        end
+        
+        if @configuration.dry_run 
+          puts '** Dry Run - No action here! **'
+          return
+        end
         
         begin
           response = RestClient.post(ENDPOINT, payload, :accept => :json)
@@ -43,7 +53,8 @@ module BetaBuilder
       private
       
       def get_notes
-        @configuration.release_notes || get_notes_using_editor || get_notes_using_prompt
+        notes = @configuration.release_notes_text
+        notes || get_notes_using_editor || get_notes_using_prompt
       end
       
       def get_notes_using_editor

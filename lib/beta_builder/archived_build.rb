@@ -70,15 +70,16 @@ module BetaBuilder
     private
     
     def write_plist_to(path)
+      version = metadata["CFBundleShortVersionString"] || metadata["CFBundleVersion"]
       plist = {
         "ApplicationProperties" => {
           "ApplicationPath"             => File.join("Applications", @configuration.app_file_name),
           "CFBundleIdentifier"          => metadata["CFBundleIdentifier"], 
-          "CFBundleShortVersionString"  => metadata["CFBundleShortVersionString"], 
+          "CFBundleShortVersionString"  => version, 
           "IconPaths"                   => metadata["CFBundleIconFiles"].map { |file| File.join("Applications", @configuration.app_file_name, file) }
         }, 
         "ArchiveVersion" => 1.0, 
-        "Comment"        => @configuration.release_notes, 
+        "Comment"        => @configuration.release_notes_text,
         "CreationDate"   => Time.now, 
         "Name"           => @configuration.archive_name, 
         "SchemeName"     => @configuration.scheme
