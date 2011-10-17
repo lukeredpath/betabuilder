@@ -87,7 +87,12 @@ module BetaBuilder
         output = File.read("build.output")
         
         # yes, this is truly horrible, but unless somebody else can find a better way...
-        reference = output.split("\n").grep(/^Validate(.*)\/Xcode\/DerivedData\/(.*)-(.*)/).first.split(" ").last
+        found = output.split("\n").grep(/^Validate(.*)\/Xcode\/DerivedData\/(.*)-(.*)/).first
+        if found && found =~ /Validate \"(.*)\"/
+            reference = $1 
+        else 
+            raise "Cannot parse build_dir from build output."
+        end        
         derived_data_directory = reference.split("/Build/Products/").first
         "#{derived_data_directory}/Build/Products/"
       end
