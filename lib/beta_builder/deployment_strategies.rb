@@ -29,11 +29,12 @@ module BetaBuilder
     private
 
     def self.strategies
-      {:web => Web, :testflight => TestFlight}
+      {:web => Web, :testflight => TestFlight, :dropbox => Dropbox}
     end
   end
 end
 
 require 'beta_builder/deployment_strategies/web'
 require 'beta_builder/deployment_strategies/testflight'
+require 'beta_builder/deployment_strategies/dropbox'
 
