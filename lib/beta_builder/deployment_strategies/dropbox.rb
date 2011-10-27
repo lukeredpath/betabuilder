@@ -128,9 +128,9 @@ module BetaBuilder
         # puts "uploaded:", response3.inspect
         puts "Done!"
         
-        puts "#{webpage_url}"
+        puts "#{@configuration.webpage_url}"
         if @configuration.open_browser_when_done
-          `open "#{webpage_url}"`
+          `open "#{@configuration.webpage_url}"`
         end
         
       end
