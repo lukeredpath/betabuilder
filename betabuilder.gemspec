@@ -2,14 +2,14 @@
 
 Gem::Specification.new do |s|
   s.name = %q{betabuilder}
-  s.version = "0.7.3"
+  s.version = "0.7.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Luke Redpath"]
   s.date = %q{2011-08-05}
   s.email = %q{luke@lukeredpath.co.uk}
   s.extra_rdoc_files = ["README.md", "LICENSE", "CHANGES.md"]
-  s.files = ["CHANGES.md", "LICENSE", "README.md", "lib/beta_builder/archived_build.rb", "lib/beta_builder/deployment_strategies/testflight.rb", "lib/beta_builder/deployment_strategies/web.rb", "lib/beta_builder/deployment_strategies.rb", "lib/beta_builder.rb", "lib/betabuilder.rb"]
+  s.files = ["CHANGES.md", "LICENSE", "README.md", "lib/beta_builder/archived_build.rb", "lib/beta_builder/deployment_strategies/testflight.rb", "lib/beta_builder/deployment_strategies/dropbox.rb", "lib/beta_builder/deployment_strategies/web.rb", "lib/beta_builder/deployment_strategies.rb", "lib/beta_builder.rb", "lib/betabuilder.rb"]
   s.homepage = %q{http://github.com/lukeredpath/betabuilder}
   s.rdoc_options = ["--main", "README.md"]
   s.require_paths = ["lib"]
@@ -24,16 +24,19 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<uuid>, ["~> 2.3.1"])
       s.add_runtime_dependency(%q<rest-client>, ["~> 1.6.1"])
       s.add_runtime_dependency(%q<json>, ["~> 1.4.6"])
+      s.add_runtime_dependency(%q<dropbox-sdk>, ["~> 1.0.beta"])
     else
       s.add_dependency(%q<CFPropertyList>, ["~> 2.0.0"])
       s.add_dependency(%q<uuid>, ["~> 2.3.1"])
       s.add_dependency(%q<rest-client>, ["~> 1.6.1"])
       s.add_dependency(%q<json>, ["~> 1.4.6"])
+      s.add_dependency(%q<dropbox-sdk>, ["~> 1.0.beta"])
     end
   else
     s.add_dependency(%q<CFPropertyList>, ["~> 2.0.0"])
     s.add_dependency(%q<uuid>, ["~> 2.3.1"])
     s.add_dependency(%q<rest-client>, ["~> 1.6.1"])
     s.add_dependency(%q<json>, ["~> 1.4.6"])
+    s.add_dependency(%q<dropbox-sdk>, ["~> 1.0.beta"])
   end
 end
