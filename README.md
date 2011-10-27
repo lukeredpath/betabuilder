@@ -131,6 +131,23 @@ You will to configure betabuilder to use the `web` deployment strategy with some
     
 The `deploy_to` setting specifies the URL that your app will be published to. The `remote_host` setting is the SSH host that will be used to copy the files to your server using SCP. Finally, the `remote_directory` setting is the path to the location to your server that files will be uploaded to. You will need to configure any virtual hosts on your server to make this work.
 
+## Deploying to Dropbox
+
+BetaBuilder now supports deploying to your Dropbox /Public folder. Below is an example configuration block.
+
+config.deploy_using(:dropbox) do |c|
+  c.user_id = "XXXXXX"
+  c.open_browser_when_done = true
+  c.consumer_key = "XXXXXXXXXXX" #see https://www.dropbox.com/developers/apps for keys
+  c.consumer_secret = "XXXXXXXXXXX"
+  c.deploy_to = "/dropbox/path/to/deployment"
+end
+
+`user_id` is your dropbox UserID
+`open_browser_when_done` will launch safari on successful deployment
+`consumer_key` and `consumer_secret` Create these values at https://www.dropbox.com/developers/apps
+`deploy_to` Path within your /Public folder to deploy
+
 ## License
 
 This code is licensed under the MIT license.

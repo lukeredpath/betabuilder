@@ -1,3 +1,7 @@
+## 0.7.4 
+* Forked by danhollywells 10/25/11
+* added Dropbox Public folder deployment strategy
+
 ## 0.7.3
 * Made the Xcode derived data directory more robust by grepping for the Validate line in the log.
 
