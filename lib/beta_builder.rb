@@ -149,7 +149,15 @@ module BetaBuilder
           FileUtils.mkdir('pkg/dist')
           FileUtils.mv("pkg/#{@configuration.ipa_name}", "pkg/dist")
         end
-        
+
+        desc "Build and archive the app"
+        task :archive => :build do
+          puts "Archiving build..."
+          archive = BetaBuilder.archive(@configuration)
+          output_path = archive.save_to(@configuration.archive_path)
+          puts "Archive saved to #{output_path}."
+        end
+
         if @configuration.deployment_strategy
           desc "Prepare your app for deployment"
           task :prepare => :package do
@@ -168,13 +176,7 @@ module BetaBuilder
           end
         end
         
-        desc "Build and archive the app"
-        task :archive => :build do
-          puts "Archiving build..."
-          archive = BetaBuilder.archive(@configuration)
-          output_path = archive.save_to(@configuration.archive_path)
-          puts "Archive saved to #{output_path}."
-        end
+
       end
     end
   end
