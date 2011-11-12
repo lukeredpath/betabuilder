@@ -141,13 +141,16 @@ module BetaBuilder
           end
                     
           FileUtils.rm_rf('pkg') && FileUtils.mkdir_p('pkg')
-          FileUtils.mkdir_p("pkg/Payload")
-          FileUtils.mv(@configuration.built_app_path, "pkg/Payload/#{@configuration.app_file_name}")
-          Dir.chdir("pkg") do
-            system("zip -r '#{@configuration.ipa_name}' Payload")
-          end
+#          FileUtils.mkdir_p("pkg/Payload")
+#          FileUtils.mv(@configuration.built_app_path, "pkg/Payload/#{@configuration.app_file_name}")
+#          Dir.chdir("pkg") do
+#            system("zip -r '#{@configuration.ipa_name}' Payload")
+#          end
+          
+          system("/usr/bin/xcrun -sdk iphoneos PackageApplication -v '#{@configuration.built_app_path}' -o '/tmp/#{@configuration.ipa_name}' --sign 'iPhone Distribution: Virtual World Computing, LLC' --embed adhoc.mobileprovision")
+
           FileUtils.mkdir('pkg/dist')
-          FileUtils.mv("pkg/#{@configuration.ipa_name}", "pkg/dist")
+          FileUtils.mv("/tmp/#{@configuration.ipa_name}", "pkg/dist")
         end
         
         if @configuration.deployment_strategy
