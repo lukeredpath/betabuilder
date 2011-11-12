@@ -4,21 +4,21 @@ module BetaBuilder
       def extended_configuration_for_strategy
         proc do
           def deployment_url
-            File.join(deploy_to, target.downcase, ipa_name)
+            File.join(deploy_to, ipa_name)
           end
 
           def manifest_url
-            File.join(deploy_to, target.downcase, "manifest.plist")
+            File.join(deploy_to, "manifest.plist")
           end
 
           def remote_installation_path
-            File.join(remote_directory, target.downcase)
+            File.join(remote_directory)
           end
         end
       end
       
       def prepare
-        plist = CFPropertyList::List.new(:file => "pkg/Payload/#{@configuration.app_name}/Info.plist")
+        plist = CFPropertyList::List.new(:file => "pkg/Payload/#{@configuration.app_name}.app/Info.plist")
         plist_data = CFPropertyList.native_types(plist.value)
         File.open("pkg/dist/manifest.plist", "w") do |io|
           io << %{
