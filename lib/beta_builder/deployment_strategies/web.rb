@@ -72,7 +72,7 @@ module BetaBuilder
   </head>
   <body>
     <div id="container">
-      <div class="link"><a href="itms-services://?action=download-manifest&url=#{@configuration.manifest_url}">Tap Here to Install<br />#{@configuration.target}<br />On Your Device</a></div>
+      <div class="link"><a href="itms-services://?action=download-manifest&url=#{@configuration.manifest_url}">Tap Here to Install<br />#{@configuration.target} #{plist_data['CFBundleVersion']}<br />On Your Device</a></div>
       <p><strong>Link didn't work?</strong><br />
 	Make sure you're visiting this page on your device, not your computer.</p>
     </div>
