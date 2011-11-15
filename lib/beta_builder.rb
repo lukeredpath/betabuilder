@@ -147,7 +147,7 @@ module BetaBuilder
 #            system("zip -r '#{@configuration.ipa_name}' Payload")
 #          end
           
-          system("/usr/bin/xcrun -sdk iphoneos PackageApplication -v '#{@configuration.built_app_path}' -o '/tmp/#{@configuration.ipa_name}' --sign '#{@config.signing_identity}' --embed #{@configuration.provisioning_profile}")
+          system("/usr/bin/xcrun -sdk iphoneos PackageApplication -v '#{@configuration.built_app_path}' -o '/tmp/#{@configuration.ipa_name}' --sign '#{@configuration.signing_identity}' --embed #{@configuration.provisioning_profile}")
 
           FileUtils.mkdir('pkg/dist')
           FileUtils.mv("/tmp/#{@configuration.ipa_name}", "pkg/dist")
