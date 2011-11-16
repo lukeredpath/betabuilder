@@ -1,3 +1,15 @@
+## 0.7.4.1
+* Allow auto-archiving from other Rake namespaces (@victor)
+* Fixed bug with Xcode archive sharing (@victor)
+* Fall back on CFBundleVersion if CFBundleVersionShortString is not set (@subdigital)
+* Added verbose and dry run options to the TestFlight deployment strategy (@subdigital)
+* Defer dynamic release note generation until runtime (@subdigital)
+* Allow architectures to be configured (@subdigital)
+* Fix detection of build directories containing spaces
+
+# 0.7.4
+* YANKED
+
 ## 0.7.3
 * Made the Xcode derived data directory more robust by grepping for the Validate line in the log.
 
