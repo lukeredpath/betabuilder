@@ -4,6 +4,7 @@ require 'fileutils'
 require 'cfpropertylist'
 require 'beta_builder/archived_build'
 require 'beta_builder/deployment_strategies'
+require 'beta_builder/build_output_parser'
 
 module BetaBuilder
   class Tasks < ::Rake::TaskLib
@@ -84,17 +85,8 @@ module BetaBuilder
       end
       
       def derived_build_dir_from_build_output
-        output = File.read("build.output")
-        
-        # yes, this is truly horrible, but unless somebody else can find a better way...
-        found = output.split("\n").grep(/^Validate(.*)\/Xcode\/DerivedData\/(.*)-(.*)/).first
-        if found && found =~ /Validate \"(.*)\"/
-            reference = $1 
-        else 
-            raise "Cannot parse build_dir from build output."
-        end        
-        derived_data_directory = reference.split("/Build/Products/").first
-        "#{derived_data_directory}/Build/Products/"
+        output = BuildOutputParser.new(File.read("build.output"))
+        output.build_output_dir  
       end
       
       def built_app_dsym_path
