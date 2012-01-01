@@ -6,7 +6,7 @@ require 'fileutils'
 module BetaBuilder
   module DeploymentStrategies
     class TestFlight < Strategy
-      ENDPOINT = "http://testflightapp.com/api/builds.json"
+      ENDPOINT = "https://testflightapp.com/api/builds.json"
       
       def extended_configuration_for_strategy
         proc do
