@@ -6,7 +6,7 @@ require 'fileutils'
 module BetaBuilder
   module DeploymentStrategies
     class TestFlight < Strategy
-      ENDPOINT = "http://testflightapp.com/api/builds.json"
+      ENDPOINT = "https://testflightapp.com/api/builds.json"
       
       def extended_configuration_for_strategy
         proc do
@@ -24,7 +24,8 @@ module BetaBuilder
           :file               => File.new(@configuration.ipa_path, 'rb'),
           :notes              => release_notes,
           :distribution_lists => (@configuration.distribution_lists || []).join(","),
-          :notify             => @configuration.notify || false
+          :notify             => @configuration.notify || false,
+          :replace            => @configuration.replace || false
         }
         puts "Uploading build to TestFlight..."
         if @configuration.verbose
