@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.date = "2011-11-16"
   s.email = "luke@lukeredpath.co.uk"
   s.extra_rdoc_files = ["README.md", "LICENSE", "CHANGES.md"]
-  s.files = ["CHANGES.md", "LICENSE", "README.md", "lib/beta_builder/archived_build.rb", "lib/beta_builder/deployment_strategies/testflight.rb", "lib/beta_builder/deployment_strategies/web.rb", "lib/beta_builder/deployment_strategies.rb", "lib/beta_builder.rb", "lib/betabuilder.rb"]
+  s.files = ["CHANGES.md", "LICENSE", "README.md", "lib/beta_builder/archived_build.rb", "lib/beta_builder/build_output_parser.rb", "lib/beta_builder/deployment_strategies/testflight.rb", "lib/beta_builder/deployment_strategies/web.rb", "lib/beta_builder/deployment_strategies.rb", "lib/beta_builder.rb", "lib/betabuilder.rb"]
   s.homepage = "http://github.com/lukeredpath/betabuilder"
   s.rdoc_options = ["--main", "README.md"]
   s.require_paths = ["lib"]
