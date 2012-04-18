@@ -16,6 +16,10 @@ module BetaBuilder
       derived_data_directory = reference.split("/Build/Products/").first
       "#{derived_data_directory}/Build/Products/"
     end
+
+    def failed?
+      @output.split("\n").any? {|line| line.include? "** BUILD FAILED **"}
+    end
   end
 end
 

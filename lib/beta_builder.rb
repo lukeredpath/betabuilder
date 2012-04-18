@@ -32,7 +32,7 @@ module BetaBuilder
 
     def xcodebuild(*args)
       # we're using tee as we still want to see our build output on screen
-      system("#{@configuration.xcodebuild_path} #{args.join(" ")} | tee build.output")
+      system("#{@configuration.xcodebuild_path} #{args.join(" ")} 2>&1 | tee build.output")
     end
 
     class Configuration < OpenStruct
@@ -118,6 +118,7 @@ module BetaBuilder
         desc "Build the beta release of the app"
         task :build => :clean do
           xcodebuild @configuration.build_arguments, "build"
+          raise "** BUILD FAILED **" if BuildOutputParser.new(File.read("build.output")).failed?
         end
         
         task :clean do
