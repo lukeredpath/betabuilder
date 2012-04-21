@@ -32,7 +32,7 @@ module BetaBuilder
 
     def xcodebuild(*args)
       # we're using tee as we still want to see our build output on screen
-      system("#{@configuration.xcodebuild_path} #{args.join(" ")} | tee build.output")
+      system("#{@configuration.xcodebuild_path} #{args.join(" ")} | tee build.output; [ $PIPESTATUS -eq 0 ] || exit $PIPESTATUS")
     end
 
     class Configuration < OpenStruct
