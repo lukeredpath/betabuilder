@@ -76,7 +76,7 @@ module BetaBuilder
           "ApplicationPath"             => File.join("Applications", @configuration.app_file_name),
           "CFBundleIdentifier"          => metadata["CFBundleIdentifier"], 
           "CFBundleShortVersionString"  => version, 
-          "IconPaths"                   => metadata["CFBundleIconFiles"].map { |file| File.join("Applications", @configuration.app_file_name, file) }
+          "IconPaths"                   => metadata["CFBundleIcons"]["CFBundlePrimaryIcon"]["CFBundleIconFiles"].map { |file| File.join("Applications", @configuration.app_file_name, file) }
         }, 
         "ArchiveVersion" => 1.0, 
         "Comment"        => @configuration.release_notes_text,
