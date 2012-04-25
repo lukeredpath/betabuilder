@@ -15,11 +15,11 @@ spec = Gem::Specification.new do |s|
 
   # Change these as appropriate
   s.name              = "betabuilder"
-  s.version           = "0.7.4.1"
+  s.version           = "0.7.5"
   s.summary           = "A set of Rake tasks and utilities for managing iOS ad-hoc builds"
-  s.author            = "Luke Redpath"
-  s.email             = "luke@lukeredpath.co.uk"
-  s.homepage          = "http://github.com/lukeredpath/betabuilder"
+  s.authors           = ["Luke Redpath", "Nick Peelman"]
+  s.email             = ["luke@lukeredpath.co.uk", "nick@peelman.us"]
+  s.homepage          = "http://github.com/peelman/betabuilder"
 
   s.has_rdoc          = false
   s.extra_rdoc_files  = %w(README.md LICENSE CHANGES.md)
