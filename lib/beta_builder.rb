@@ -15,6 +15,7 @@ module BetaBuilder
         :auto_archive => false,
         :archive_path  => File.expand_path("~/Library/Developer/Xcode/Archives"),
         :xcodebuild_path => "xcodebuild",
+        :xcodeargs => nil,
         :project_file_path => nil,
         :workspace_path => nil,
         :ipa_destination_path => "./",
@@ -54,9 +55,11 @@ module BetaBuilder
 
         args << " -arch \"#{arch}\"" unless arch.nil?
 
-        if set_version_number
-          args << " VERSION_LONG=#{build_number_git}"
-        end
+
+        args << " VERSION_LONG=#{build_number_git}" if set_version_number
+        
+        args << " #{xcodeargs}" unless xcodeargs.nil?
+
         
         args
       end
