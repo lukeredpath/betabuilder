@@ -15,15 +15,18 @@ module BetaBuilder
         :auto_archive => false,
         :archive_path  => File.expand_path("~/Library/Developer/Xcode/Archives"),
         :xcodebuild_path => "xcodebuild",
+        :xcodeargs => nil,
         :project_file_path => nil,
         :workspace_path => nil,
+        :ipa_destination_path => "./",
         :scheme => nil,
         :app_name => nil,
         :arch => nil,
         :xcode4_archive_mode => false,
         :skip_clean => false,
         :verbose => false,
-        :dry_run => false
+        :dry_run => false,
+        :set_version_number => false
       )
       @namespace = namespace
       yield @configuration if block_given?
@@ -52,6 +55,12 @@ module BetaBuilder
 
         args << " -arch \"#{arch}\"" unless arch.nil?
 
+
+        args << " VERSION_LONG=#{build_number_git}" if set_version_number
+        
+        args << " #{xcodeargs}" unless xcodeargs.nil?
+
+        
         args
       end
 
@@ -93,12 +102,12 @@ module BetaBuilder
         "#{built_app_path}.dSYM"
       end
       
-      def dist_path
-        File.join("pkg/dist")
+      def ipa_path
+        File.join(File.expand_path(ipa_destination_path), ipa_name)
       end
       
-      def ipa_path
-        File.join(dist_path, ipa_name)
+      def build_number_git
+        `git describe --tags --long`.chop
       end
       
       def deploy_using(strategy_name, &block)
@@ -115,15 +124,17 @@ module BetaBuilder
     
     def define
       namespace(@namespace) do
-        desc "Build the beta release of the app"
-        task :build => :clean do
-          xcodebuild @configuration.build_arguments, "build"
-        end
         
+        desc "Clean the Build"
         task :clean do
           unless @configuration.skip_clean
             xcodebuild @configuration.build_arguments, "clean"
           end
+        end
+        
+        desc "Build the beta release of the app"
+        task :build => :clean do
+          xcodebuild @configuration.build_arguments, "build"
         end
         
         desc "Package the beta release as an IPA file"
@@ -131,15 +142,9 @@ module BetaBuilder
           if @configuration.auto_archive
             Rake::Task["#{@namespace}:archive"].invoke
           end
-                    
-          FileUtils.rm_rf('pkg') && FileUtils.mkdir_p('pkg')
-          FileUtils.mkdir_p("pkg/Payload")
-          FileUtils.mv(@configuration.built_app_path, "pkg/Payload/#{@configuration.app_file_name}")
-          Dir.chdir("pkg") do
-            system("zip -r '#{@configuration.ipa_name}' Payload")
-          end
-          FileUtils.mkdir('pkg/dist')
-          FileUtils.mv("pkg/#{@configuration.ipa_name}", "pkg/dist")
+               
+          system("/usr/bin/xcrun -sdk iphoneos PackageApplication -v '#{@configuration.built_app_path}' -o '#{@configuration.ipa_path}' --sign '#{@configuration.signing_identity}' --embed #{@configuration.provisioning_profile}")
+
         end
         
         if @configuration.deployment_strategy
