@@ -17,6 +17,7 @@ module BetaBuilder
         :xcodebuild_path => "xcodebuild",
         :project_file_path => nil,
         :workspace_path => nil,
+        :ipa_destination_path => "./",
         :scheme => nil,
         :app_name => nil,
         :arch => nil,
@@ -98,12 +99,8 @@ module BetaBuilder
         "#{built_app_path}.dSYM"
       end
       
-      def dist_path
-        File.join(derived_build_dir_from_build_output, "pkg")
-      end
-      
       def ipa_path
-        File.join(dist_path, ipa_name)
+        File.join(File.expand_path(ipa_destination_path), ipa_name)
       end
       
       def build_number_git
@@ -142,9 +139,7 @@ module BetaBuilder
           if @configuration.auto_archive
             Rake::Task["#{@namespace}:archive"].invoke
           end
-          
-          FileUtils.rm_rf("#{@configuration.dist_path}")
-          FileUtils.mkdir_p("#{@configuration.dist_path}")          
+               
           system("/usr/bin/xcrun -sdk iphoneos PackageApplication -v '#{@configuration.built_app_path}' -o '#{@configuration.ipa_path}' --sign '#{@configuration.signing_identity}' --embed #{@configuration.provisioning_profile}")
 
         end
