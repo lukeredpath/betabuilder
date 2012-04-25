@@ -143,7 +143,7 @@ module BetaBuilder
             Rake::Task["#{@namespace}:archive"].invoke
           end
                
-          system("/usr/bin/xcrun -sdk iphoneos PackageApplication -v '#{@configuration.built_app_path}' -o '#{@configuration.ipa_path}' --sign '#{@configuration.signing_identity}' --embed #{@configuration.provisioning_profile}")
+          system("/usr/bin/xcrun -sdk iphoneos PackageApplication -v '#{@configuration.built_app_path}' -o '#{@configuration.ipa_path}' --sign '#{@configuration.signing_identity}' --embed '#{@configuration.provisioning_profile}'")
 
         end
         
