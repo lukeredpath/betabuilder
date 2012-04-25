@@ -62,6 +62,52 @@ To use a namespace other than "beta" for the generated tasks, simply pass in you
     
 This lets you set up different sets of BetaBuilder tasks for different configurations in the same Rakefile (e.g. a production and staging build).
 
+## Configuration
+A full list of configuration options and their details
+
+`configuration` - (String) The Xcode Configuration to use (Defined on the Info tab of the Project)
+
+`build_dir` - (File Path) The directory the build output will be. (`:derived` for Xcode 4 for versions < 0.8)
+
+`auto_archive` - (true/**false**) Automatically archive when packaging
+
+`archive_path` - (File Path) Path to the Archives
+
+`xcodebuild_path` - (File Path) Path to xcodebuild, if its non-standard
+
+`xcodeargs` - (Arguments) Arguments passed to `xcodebuild` when it runs
+
+`project_file_path` - (File Path) Path to the `.xcodeproj` file
+
+`workspace_path` - (File Path) Path to the `.xcworkspace` file
+
+`ipa_destination_path` - (File Path) Path to output Packaged IPA to
+
+`scheme` - (String) What Scheme to use when building
+
+`app_name` - (String) The name of the app being built (should match the file name, less the `.app` extension)
+
+`arch` - (String) The architecture to build for, if different from project settings
+
+`xcode4_archive_mode` - (true/**false**) Use Xcode4's Archive mode
+
+`skip_clean` - (true/**false**) Skip the clean step when building
+
+`verbose` - (true/**false**) Increased output for debugging
+
+`dry_run` - (true/**false**) Don't upload to Distribution Strategy, just act like it
+
+`set_version_number` - (true/**false**) Attempts to set a version number, see below
+
+### Configuration (Testflight)
+Testflight presents its own set of options that can be configured
+
+`api_token` - (String) Can be your API key, but its recommended to use an `ENV[""]` variable
+`team_token` - (String) Your Team's Testflight API token
+`distribution_lists` - (Array) A Ruby array (`[1,2]` or `%w{1 2}`) of distribution list names for Testflight
+`notify` - (true/**false**) Notify the distribution list of this build
+`replace` - (true/**false**) Replace if an existing build exists with the same ID and version
+
 ## Xcode 4 support
 
 Betabuilder works with Xcode 4, but you may need to tweak your task configuration slightly. The most important change you will need to make is the build directory location, unless you have configured Xcode 4 to use the "build" directory relative to your project, as in Xcode 3.
@@ -81,12 +127,28 @@ If you are working with an Xcode 4 workspace instead of a project file, you will
     config.workspace_path = "MyWorkspace.xcworkspace"
     config.scheme         = "My App Scheme"
     config.app_name       = "MyApp"
-    
+    set_version_number
 If you are using a workspace, then you must specify the scheme. You can still specify the build configuration (e.g. Release).
 
 ## Automatic deployment with deployment strategies
 
 BetaBuilder allows you to deploy your built package using it's extensible deployment strategy system; the gem currently comes with support for simple web-based deployment or uploading to [TestFlightApp.com](http://www.testflightapp.com). Eventually, you will be able to write your own custom deployment strategies if neither of these are suitable for your needs.
+
+## Setting version numbers automatically
+
+You can use betabuilder to set a build number using Git's `describe` system.  In order for that to work, at least one `tag` must exist somewhere in the git hierarchy for the branch being built from. 
+
+Also, you are required to set your `CFBundleVersion` to `${VERSION_LONG}` inside your `Info.plist`.  To accomodate manual builds, add a `VERSION_LONG` Build Setting to your app's Project, and treat it as you normally would your `Info.plist` version number.
+
+Once a tag is created and your App is configured, simply add this to your BetaBuilder config and it will use Git to generate the 
+
+	config.set_version_number = true
+
+It will generate a version number like: `1.0-15-g6b3c1bb`. 
+
+* *1.0* is the most recent tag
+* *15* is the number of commits since the tag was generated
+* *g6b3c1bb* is the beginning of the hash of the last commit.
 
 ### Deploying your app with TestFlight
 
