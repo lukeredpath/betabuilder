@@ -1,6 +1,6 @@
 require 'uuid'
 require 'fileutils'
-require 'CFPropertyList'
+require 'cfpropertylist'
 
 module BetaBuilder
   def self.archive(configuration)
