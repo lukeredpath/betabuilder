@@ -34,6 +34,6 @@ module BetaBuilder
   end
 end
 
-require 'beta_builder/deployment_strategies/web'
-require 'beta_builder/deployment_strategies/testflight'
+require File.dirname(__FILE__) + '/deployment_strategies/web'
+require File.dirname(__FILE__) + '/deployment_strategies/testflight'
 

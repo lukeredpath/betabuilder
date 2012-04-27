@@ -2,9 +2,9 @@ require 'rake/tasklib'
 require 'ostruct'
 require 'fileutils'
 require 'cfpropertylist'
-require 'beta_builder/archived_build'
-require 'beta_builder/deployment_strategies'
-require 'beta_builder/build_output_parser'
+require File.dirname(__FILE__) + '/beta_builder/archived_build'
+require File.dirname(__FILE__) + '/beta_builder/deployment_strategies'
+require File.dirname(__FILE__) + '/beta_builder/build_output_parser'
 
 module BetaBuilder
   class Tasks < ::Rake::TaskLib
