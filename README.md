@@ -103,10 +103,26 @@ A full list of configuration options and their details
 Testflight presents its own set of options that can be configured
 
 `api_token` - (String) Can be your API key, but its recommended to use an `ENV[""]` variable
+
 `team_token` - (String) Your Team's Testflight API token
+
 `distribution_lists` - (Array) A Ruby array (`[1,2]` or `%w{1 2}`) of distribution list names for Testflight
+
 `notify` - (true/**false**) Notify the distribution list of this build
+
 `replace` - (true/**false**) Replace if an existing build exists with the same ID and version
+
+### Configuration (Web)
+Pushing to a web server has the following options.
+
+SSH keys will simplify authentication and make this process seamless
+
+`remote_host` - (String) Hostname for the server the build will be pushed to
+
+`remote_port` - (String) Port Number to use for SCP/SFTP
+
+`remote_installation_path` - (String) Remote Path
+
 
 ## Xcode 4 support
 

@@ -2,9 +2,9 @@ require 'rake/tasklib'
 require 'ostruct'
 require 'fileutils'
 require 'cfpropertylist'
-require 'beta_builder/archived_build'
-require 'beta_builder/deployment_strategies'
-require 'beta_builder/build_output_parser'
+require File.dirname(__FILE__) + '/beta_builder/archived_build'
+require File.dirname(__FILE__) + '/beta_builder/deployment_strategies'
+require File.dirname(__FILE__) + '/beta_builder/build_output_parser'
 
 module BetaBuilder
   class Tasks < ::Rake::TaskLib
@@ -35,7 +35,7 @@ module BetaBuilder
 
     def xcodebuild(*args)
       # we're using tee as we still want to see our build output on screen
-      system("#{@configuration.xcodebuild_path} #{args.join(" ")} | tee build.output")
+      system("#{@configuration.xcodebuild_path} #{args.join(" ")} 2>&1 | tee build.output")
     end
 
     class Configuration < OpenStruct
@@ -123,8 +123,7 @@ module BetaBuilder
     private
     
     def define
-      namespace(@namespace) do
-        
+      namespace(@namespace) do        
         desc "Clean the Build"
         task :clean do
           unless @configuration.skip_clean
@@ -135,6 +134,7 @@ module BetaBuilder
         desc "Build the beta release of the app"
         task :build => :clean do
           xcodebuild @configuration.build_arguments, "build"
+          raise "** BUILD FAILED **" if BuildOutputParser.new(File.read("build.output")).failed?
         end
         
         desc "Package the beta release as an IPA file"
@@ -146,7 +146,15 @@ module BetaBuilder
           system("/usr/bin/xcrun -sdk iphoneos PackageApplication -v '#{@configuration.built_app_path}' -o '#{@configuration.ipa_path}' --sign '#{@configuration.signing_identity}' --embed '#{@configuration.provisioning_profile}'")
 
         end
-        
+
+        desc "Build and archive the app"
+        task :archive => :build do
+          puts "Archiving build..."
+          archive = BetaBuilder.archive(@configuration)
+          output_path = archive.save_to(@configuration.archive_path)
+          puts "Archive saved to #{output_path}."
+        end
+
         if @configuration.deployment_strategy
           desc "Prepare your app for deployment"
           task :prepare => :package do
@@ -165,13 +173,7 @@ module BetaBuilder
           end
         end
         
-        desc "Build and archive the app"
-        task :archive => :build do
-          puts "Archiving build..."
-          archive = BetaBuilder.archive(@configuration)
-          output_path = archive.save_to(@configuration.archive_path)
-          puts "Archive saved to #{output_path}."
-        end
+
       end
     end
   end
