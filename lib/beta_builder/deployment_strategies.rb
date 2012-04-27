@@ -22,7 +22,7 @@ module BetaBuilder
       end
 
       def prepare
-        puts "Nothing to prepare!"
+        puts "Nothing to prepare!" if @configuration.verbose
       end
     end
 
