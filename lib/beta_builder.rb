@@ -142,8 +142,22 @@ module BetaBuilder
           if @configuration.auto_archive
             Rake::Task["#{@namespace}:archive"].invoke
           end
-               
-          system("/usr/bin/xcrun -sdk iphoneos PackageApplication -v '#{@configuration.built_app_path}' -o '#{@configuration.ipa_path}' --sign '#{@configuration.signing_identity}' --embed '#{@configuration.provisioning_profile}'")
+          
+          raise "** PACKAGE FAILED ** No Signing Identity Found" unless @configuration.signing_identity
+          raise "** PACKAGE FAILED ** No Provisioning Profile Found" unless @configuration.provisioning_profile
+          
+          # Construct the IPA and Sign it
+          cmd = []
+          cmd.push "/usr/bin/xcrun"
+          cmd.push "-sdk iphoneos"
+          cmd.push "PackageApplication"
+          cmd.push "-v '#{@configuration.built_app_path}'"
+          cmd.push "-o '#{@configuration.ipa_path}'"
+          cmd.push "--sign '#{@configuration.signing_identity}'"
+          cmd.push "--embed '#{@configuration.provisioning_profile}'"
+          cmd = cmd.join(" ")
+          puts "Running #{cmd}"
+          system(cmd)
 
         end
 
