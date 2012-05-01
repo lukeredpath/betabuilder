@@ -40,7 +40,7 @@ module BetaBuilder
       cmd = []
       cmd << @configuration.xcodebuild_path
       cmd.concat args
-      puts "Running: #{cmd.join("")}" if @configuration.verbose
+      puts "Running: #{cmd.join(" ")}" if @configuration.verbose
       cmd << "2>&1 %s build.output" % (@configuration.verbose ? '| tee' : '>')
       cmd = cmd.join(" ")
       system(cmd)
@@ -68,8 +68,8 @@ module BetaBuilder
         args << "VERSION_LONG='#{build_number_git}'" if set_version_number
         
         if xcodeargs
-            args.concat xcodeargs if xcodeargs.is_an Array
-            args << "#{xcodeargs}" if xcodears.is_a String
+            args.concat xcodeargs if xcodeargs.is_a? Array
+            args << "#{xcodeargs}" if xcodears.is_a? String
         end
         
         args
@@ -171,8 +171,8 @@ module BetaBuilder
           cmd << "--sign '#{@configuration.signing_identity}'"
           cmd << "--embed '#{@configuration.provisioning_profile}'"
           if @configuration.packageargs
-            cmd.concat @configuration.packageargs if @configuration.packageargs.is_an Array
-            cmd << @configuration.packageargs if @configuration.packageargs.is_a String
+            cmd.concat @configuration.packageargs if @configuration.packageargs.is_a? Array
+            cmd << @configuration.packageargs if @configuration.packageargs.is_a? String
           end
           puts "Running #{cmd.join(" ")}" if @configuration.verbose
           cmd << "2>&1 %s build.output" % (@configuration.verbose ? '| tee' : '>')
