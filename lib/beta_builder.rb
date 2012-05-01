@@ -25,9 +25,9 @@ module BetaBuilder
         :app_name => nil,
         :arch => nil,
         :xcode4_archive_mode => false,
-        :skip_clean => false,
-        :verbose => false,
-        :dry_run => false,
+        :skip_clean => ENV['SKIPCLEAN'] || false,
+        :verbose => ENV['VERBOSE'] || false,
+        :dry_run => ENV['DRY'] || false,
         :set_version_number => false
       )
       @namespace = namespace
