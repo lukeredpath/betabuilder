@@ -6,6 +6,8 @@ require 'fileutils'
 module BetaBuilder
   module DeploymentStrategies
     class TestFlight < Strategy
+      include Rake::DSL
+      include FileUtils
       ENDPOINT = "https://testflightapp.com/api/builds.json"
       
       def extended_configuration_for_strategy
