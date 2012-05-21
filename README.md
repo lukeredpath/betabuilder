@@ -123,6 +123,20 @@ SSH keys will simplify authentication and make this process seamless
 
 `remote_installation_path` - (String) Remote Path
 
+### Configuration (RunTime)
+Certain configuration options are availabe at the command line, so that you can temporarily set them for a single run without modifying your configuration.
+
+Pass any of these in as environment variables:
+
+`DRY` - (true/**false**) Enable Dry Run
+`VERBOSE` - (true/**false**) Turn on all output; lets you see the clean, build, and signing output
+`SKIPCLEAN` - (true/**false**) Skips the clean step and goes right to Build.
+
+####Examples
+
+`rake staging:deploy DRY=true`
+
+`rake staging:redeploy VERBOSE=true SKIPCLEAN=true`
 
 ## Xcode 4 support
 
