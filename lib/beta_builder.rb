@@ -98,15 +98,38 @@ module BetaBuilder
       
       def built_app_path
         if build_dir == :derived
-          File.join("#{derived_build_dir_from_build_output}", "#{configuration}-iphoneos", "#{app_file_name}")
+          File.join("#{derived_build_dir}", "#{configuration}-iphoneos", "#{app_file_name}")
         else
           File.join("#{build_dir}", "#{configuration}-iphoneos", "#{app_file_name}")
         end
       end
       
-      def derived_build_dir_from_build_output
-        output = BuildOutputParser.new(File.read("build.output"))
-        output.build_output_dir  
+      def derived_build_dir
+        workspace_settings_path = File.join(workspace_path, 'xcuserdata',
+                                            "#{`whoami`.strip}.xcuserdatad",
+                                            'WorkspaceSettings.xcsettings')
+
+        # Check the derived data location style
+        workspace_settings = CFPropertyList.native_types(
+          CFPropertyList::List.new(:file => workspace_settings_path).value)
+        derived_data_location_style = workspace_settings['IDEWorkspaceUserSettings_DerivedDataLocationStyle']
+        derived_data_directory = case derived_data_location_style
+          when 0 then # The standard DerivedData directory.
+            workspace_name = File.basename(workspace_path, '.xcworkspace')
+            derived_data_dir = File.expand_path('~/Library/Developer/Xcode/DerivedData')
+
+            # Look in every directory named after our workspace for the
+            # info.plist that points back to our workspace.
+            Dir[File.join(derived_data_dir, "#{workspace_name}-*")].find do |d|
+              CFPropertyList.native_types(CFPropertyList::List.new(:file => "#{d}/info.plist").value)['WorkspacePath'] == workspace_path
+            end
+          when 1, 2 then # We have the full path, or relative path
+            workspace_settings['IDEWorkspaceUserSettings_DerivedDataCustomLocation']
+          else
+            raise "Unable to determine the DerivedData path. Your Workspace may be invalid or corrupted"
+          end
+
+        "#{derived_data_directory}/Build/Products/"
       end
       
       def built_app_dsym_path
