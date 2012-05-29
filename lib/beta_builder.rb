@@ -2,9 +2,9 @@ require 'rake/tasklib'
 require 'ostruct'
 require 'fileutils'
 require 'cfpropertylist'
-require 'beta_builder/archived_build'
-require 'beta_builder/deployment_strategies'
-require 'beta_builder/build_output_parser'
+require File.dirname(__FILE__) + '/beta_builder/archived_build'
+require File.dirname(__FILE__) + '/beta_builder/deployment_strategies'
+require File.dirname(__FILE__) + '/beta_builder/build_output_parser'
 
 module BetaBuilder
   class Tasks < ::Rake::TaskLib
@@ -58,7 +58,7 @@ module BetaBuilder
       def archive_name
         app_name || target
       end
-      
+
       def app_file_name
         raise ArgumentError, "app_name or target must be set in the BetaBuilder configuration block" if app_name.nil? && target.nil?
         if app_name
@@ -67,7 +67,7 @@ module BetaBuilder
           "#{target}.app"
         end
       end
-      
+
       def ipa_name
         if app_name
           "#{app_name}.ipa"
@@ -75,7 +75,7 @@ module BetaBuilder
           "#{target}.ipa"
         end
       end
-      
+
       def built_app_path
         if build_dir == :derived
           "#{derived_build_dir_from_build_output}/#{configuration}-iphoneos/#{app_file_name}"
@@ -83,24 +83,24 @@ module BetaBuilder
           "#{build_dir}/#{configuration}-iphoneos/#{app_file_name}"
         end
       end
-      
+
       def derived_build_dir_from_build_output
         output = BuildOutputParser.new(File.read("build.output"))
-        output.build_output_dir  
+        output.build_output_dir
       end
-      
+
       def built_app_dsym_path
         "#{built_app_path}.dSYM"
       end
-      
+
       def dist_path
         File.join("pkg/dist")
       end
-      
+
       def ipa_path
         File.join(dist_path, ipa_name)
       end
-      
+
       def deploy_using(strategy_name, &block)
         if DeploymentStrategies.valid_strategy?(strategy_name.to_sym)
           self.deployment_strategy = DeploymentStrategies.build(strategy_name, self)
@@ -110,28 +110,28 @@ module BetaBuilder
         end
       end
     end
-    
+
     private
-    
+
     def define
       namespace(@namespace) do
         desc "Build the beta release of the app"
         task :build => :clean do
           xcodebuild @configuration.build_arguments, "build"
         end
-        
+
         task :clean do
           unless @configuration.skip_clean
             xcodebuild @configuration.build_arguments, "clean"
           end
         end
-        
+
         desc "Package the beta release as an IPA file"
         task :package => :build do
           if @configuration.auto_archive
             Rake::Task["#{@namespace}:archive"].invoke
           end
-                    
+
           FileUtils.rm_rf('pkg') && FileUtils.mkdir_p('pkg')
           FileUtils.mkdir_p("pkg/Payload")
           FileUtils.mv(@configuration.built_app_path, "pkg/Payload/#{@configuration.app_file_name}")
@@ -141,25 +141,25 @@ module BetaBuilder
           FileUtils.mkdir('pkg/dist')
           FileUtils.mv("pkg/#{@configuration.ipa_name}", "pkg/dist")
         end
-        
+
         if @configuration.deployment_strategy
           desc "Prepare your app for deployment"
           task :prepare => :package do
             @configuration.deployment_strategy.prepare
           end
-          
+
           desc "Deploy the beta using your chosen deployment strategy"
           task :deploy => :prepare do
             @configuration.deployment_strategy.deploy
           end
-          
+
           desc "Deploy the last build"
           task :redeploy do
             @configuration.deployment_strategy.prepare
             @configuration.deployment_strategy.deploy
           end
         end
-        
+
         desc "Build and archive the app"
         task :archive => :build do
           puts "Archiving build..."
