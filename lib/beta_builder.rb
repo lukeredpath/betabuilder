@@ -118,7 +118,7 @@ module BetaBuilder
       end
       
       def build_number_git
-        `git describe --tags --long`.chop
+        `git describe --tags --abbrev=1`.chop
       end
       
       def deploy_using(strategy_name, &block)
