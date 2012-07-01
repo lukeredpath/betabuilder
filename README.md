@@ -1,6 +1,6 @@
 # BetaBuilder, a gem for managing iOS ad-hoc builds
 
-BetaBuilder is a simple collection of Rake tasks and utilities for managing and publishing Adhoc builds of your iOS apps. 
+BetaBuilder is a simple collection of Rake tasks and utilities for managing and publishing Adhoc builds of your iOS apps.
 
 If you're looking for the OSX BetaBuilder app -- to which this gem owes most of the credit -- you can find it [here on Github](http://github.com/HunterHillegas/iOS-BetaBuilder).
 
@@ -26,7 +26,7 @@ At the top of your Rakefile, you'll need to require `rubygems` and the `betabuil
 
     require 'rubygems'
     require 'betabuilder'
-    
+
 Because BetaBuilder is a Rake task library, you do not need to define any tasks yourself. You simply need to configure BetaBuilder with some basic information about your project and it will generate the tasks for you. A sample configuration might look something like this:
 
     BetaBuilder::Tasks.new do |config|
@@ -34,14 +34,14 @@ Because BetaBuilder is a Rake task library, you do not need to define any tasks 
       config.target = "MyGreatApp"
 
       # the Xcode configuration profile
-      config.configuration = "Adhoc" 
+      config.configuration = "Adhoc"
     end
-    
+
 Now, if you run `rake -T` in Terminal.app in the root of your project, the available tasks will be printed with a brief description of each one:
 
     rake beta:build     # Build the beta release of the app
     rake beta:package   # Package the beta release as an IPA file
-    
+
 If you use a custom Xcode build directory, rather than the default `${SRCROOT}/build` location, you can configure that too:
 
     BetaBuilder::Tasks.new do |config|
@@ -59,7 +59,7 @@ To use a namespace other than "beta" for the generated tasks, simply pass in you
 
     BetaBuilder::Tasks.new(:my_custom_namespace) do |config|
     end
-    
+
 This lets you set up different sets of BetaBuilder tasks for different configurations in the same Rakefile (e.g. a production and staging build).
 
 ## Xcode 4 support
@@ -69,19 +69,19 @@ Betabuilder works with Xcode 4, but you may need to tweak your task configuratio
 If you are using the Xcode derived data directory for your builds, then you will need to specify this. Betabuilder will then scan your build log to determine the path to the automatically generated build directory that Xcode is using for your project.
 
     config.build_dir = :derived
-    
+
 This will become the default in 0.8.
 
 If you wish to generate archives for your Xcode 4 project, you will need to enable this. This will become the default in future once Xcode 3 support is dropped (deprecated in 0.7):
 
     config.xcode4_archive_mode = true
-    
+
 If you are working with an Xcode 4 workspace instead of a project file, you will need to configure this too:
 
     config.workspace_path = "MyWorkspace.xcworkspace"
     config.scheme         = "My App Scheme"
     config.app_name       = "MyApp"
-    
+
 If you are using a workspace, then you must specify the scheme. You can still specify the build configuration (e.g. Release).
 
 ## Automatic deployment with deployment strategies
@@ -98,8 +98,8 @@ TestFlight provides an upload API and betabuilder uses that to provide a `:testf
       tf.api_token  = "YOUR_API_TOKEN"
       tf.team_token = "YOUR_TEAM_TOKEN"
     end
-    
-Now, instead of using the `beta:package` task, you can run the `beta:deploy` task instead. This task will run the package task as a dependency and upload the generated IPA file to TestFlight. 
+
+Now, instead of using the `beta:package` task, you can run the `beta:deploy` task instead. This task will run the package task as a dependency and upload the generated IPA file to TestFlight.
 
 You will be prompted to enter the release notes for the build; TestFlight requires these to inform your testers of what has changed in this build. Alternatively, if you have a way of generating the release notes automatically (for instance, using a CHANGELOG file or a git log command), you can specify a block that will be called at runtime - you can do whatever you want in this block, as long as you return a string which will be used as the release notes, e.g.
 
@@ -109,12 +109,28 @@ You will be prompted to enter the release notes for the build; TestFlight requir
         # return release notes here
       end
     end
-    
+
 Finally, you can also specify an array of distribution lists that you want to allow access to the build:
 
     config.deploy_using(:testflight) do |tf|
       ...
       tf.distribution_lists = %w{Testers Internal}
+    end
+
+### Deploying to HockeyApp
+
+Similar to TestFlight you can also use [HockeyApp](http://hockeyapp.net), you'll need your API token and your App ID.
+
+Example:
+
+    config.deploy_using(:hockeyapp) do |puck|
+      puck.api_token = "YOUR_API_TOKEN"
+      puck.app_id = "YOUR_APP_ID"
+      puck.allow_download = true
+
+      puck.generate_release_notes do
+         # return release notes here
+      end
     end
 
 ### Deploying to your own server
@@ -128,7 +144,7 @@ You will to configure betabuilder to use the `web` deployment strategy with some
       web.remote_host = "myserver.com"
       web.remote_directory = "/remote/path/to/deployment/directory"
     end
-    
+
 The `deploy_to` setting specifies the URL that your app will be published to. The `remote_host` setting is the SSH host that will be used to copy the files to your server using SCP. Finally, the `remote_directory` setting is the path to the location to your server that files will be uploaded to. You will need to configure any virtual hosts on your server to make this work.
 
 ## License
