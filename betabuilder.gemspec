@@ -23,17 +23,17 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<CFPropertyList>, ["~> 2.0.0"])
       s.add_runtime_dependency(%q<uuid>, ["~> 2.3.1"])
       s.add_runtime_dependency(%q<rest-client>, ["~> 1.6.1"])
-      s.add_runtime_dependency(%q<json>, ["~> 1.4.6"])
+      s.add_runtime_dependency(%q<json>)
     else
       s.add_dependency(%q<CFPropertyList>, ["~> 2.0.0"])
       s.add_dependency(%q<uuid>, ["~> 2.3.1"])
       s.add_dependency(%q<rest-client>, ["~> 1.6.1"])
-      s.add_dependency(%q<json>, ["~> 1.4.6"])
+      s.add_dependency(%q<json>)
     end
   else
     s.add_dependency(%q<CFPropertyList>, ["~> 2.0.0"])
     s.add_dependency(%q<uuid>, ["~> 2.3.1"])
     s.add_dependency(%q<rest-client>, ["~> 1.6.1"])
-    s.add_dependency(%q<json>, ["~> 1.4.6"])
+    s.add_dependency(%q<json>)
   end
 end
