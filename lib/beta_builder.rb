@@ -78,11 +78,19 @@ module BetaBuilder
       
       def built_app_path
         if build_dir == :derived
-          "#{derived_build_dir_from_build_output}/#{configuration}-iphoneos/#{app_file_name}"
+          "#{derived_build_dir}/#{configuration}-iphoneos/#{app_file_name}"
         else
           "#{build_dir}/#{configuration}-iphoneos/#{app_file_name}"
         end
       end
+      
+      
+      def derived_build_dir 
+        for dir in Dir[File.join(File.expand_path("~/Library/Developer/Xcode/DerivedData"), "#{app_name}-*")]
+          return "#{dir}/Build/Products" if File.read( File.join(dir, "info.plist") ).match workspace_path
+        end
+      end
+      
       
       def derived_build_dir_from_build_output
         output = BuildOutputParser.new(File.read("build.output"))
