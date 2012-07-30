@@ -6,6 +6,8 @@ require 'fileutils'
 module BetaBuilder
   module DeploymentStrategies
     class TestFlight < Strategy
+      include Rake::DSL
+      include FileUtils
       ENDPOINT = "https://testflightapp.com/api/builds.json"
       
       def extended_configuration_for_strategy
@@ -27,7 +29,6 @@ module BetaBuilder
           :notify             => @configuration.notify || false,
           :replace            => @configuration.replace || false
         }
-        puts "Uploading build to TestFlight..."
         if @configuration.verbose
           puts "ipa path: #{@configuration.ipa_path}"
           puts "release notes: #{release_notes}"
@@ -38,6 +39,8 @@ module BetaBuilder
           return
         end
         
+        print "Uploading build to TestFlight..."        
+        
         begin
           response = RestClient.post(ENDPOINT, payload, :accept => :json)
         rescue => e
@@ -45,9 +48,10 @@ module BetaBuilder
         end
         
         if (response.code == 201) || (response.code == 200)
-          puts "Upload complete."
+          puts "Done."
         else
-          puts "Upload failed. (#{response})"
+          puts "Failed."
+          puts "#{response}"
         end
       end
       

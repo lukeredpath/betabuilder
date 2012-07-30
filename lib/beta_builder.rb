@@ -2,9 +2,9 @@ require 'rake/tasklib'
 require 'ostruct'
 require 'fileutils'
 require 'cfpropertylist'
-require 'beta_builder/archived_build'
-require 'beta_builder/deployment_strategies'
-require 'beta_builder/build_output_parser'
+require File.dirname(__FILE__) + '/beta_builder/archived_build'
+require File.dirname(__FILE__) + '/beta_builder/deployment_strategies'
+require File.dirname(__FILE__) + '/beta_builder/build_output_parser'
 
 module BetaBuilder
   class Tasks < ::Rake::TaskLib
@@ -14,16 +14,21 @@ module BetaBuilder
         :build_dir => "build",
         :auto_archive => false,
         :archive_path  => File.expand_path("~/Library/Developer/Xcode/Archives"),
-        :xcodebuild_path => "xcodebuild",
+        :xcodebuild_path => "/usr/bin/xcodebuild",
+        :xcrun_path => "/usr/bin/xcrun",
+        :xcodeargs => nil,
+        :packageargs => nil,
         :project_file_path => nil,
         :workspace_path => nil,
+        :ipa_destination_path => "./",
         :scheme => nil,
         :app_name => nil,
         :arch => nil,
         :xcode4_archive_mode => false,
-        :skip_clean => false,
-        :verbose => false,
-        :dry_run => false
+        :skip_clean => ENV.fetch('SKIPCLEAN', false),
+        :verbose => ENV.fetch('VERBOSE', false),
+        :dry_run => ENV.fetch('DRY', false),
+        :set_version_number => false
       )
       @namespace = namespace
       yield @configuration if block_given?
@@ -32,7 +37,13 @@ module BetaBuilder
 
     def xcodebuild(*args)
       # we're using tee as we still want to see our build output on screen
-      system("#{@configuration.xcodebuild_path} #{args.join(" ")} | tee build.output")
+      cmd = []
+      cmd << @configuration.xcodebuild_path
+      cmd.concat args
+      puts "Running: #{cmd.join(" ")}" if @configuration.verbose
+      cmd << "2>&1 %s build.output" % (@configuration.verbose ? '| tee' : '>')
+      cmd = cmd.join(" ")
+      system(cmd)
     end
 
     class Configuration < OpenStruct
@@ -41,17 +52,26 @@ module BetaBuilder
         release_notes
       end
       def build_arguments
-        args = ""
+        args = []
         if workspace_path
           raise "A scheme is required if building from a workspace" unless scheme
-          args << "-workspace '#{workspace_path}' -scheme '#{scheme}' -configuration '#{configuration}'"
+          args << "-workspace '#{workspace_path}'"
+          args << "-scheme '#{scheme}'"
         else
-          args = "-target '#{target}' -configuration '#{configuration}' -sdk iphoneos"
-          args << " -project #{project_file_path}" if project_file_path
+          args << "-target '#{target}'"
+          args << "-sdk iphoneos"
+          args << "-project '#{project_file_path}'" if project_file_path
         end
-
-        args << " -arch \"#{arch}\"" unless arch.nil?
-
+        
+        args << "-configuration '#{configuration}'"
+        args << "-arch '#{arch}'" unless arch.nil?
+        args << "VERSION_LONG='#{build_number_git}'" if set_version_number
+        
+        if xcodeargs
+            args.concat xcodeargs if xcodeargs.is_a? Array
+            args << "#{xcodeargs}" if xcodears.is_a? String
+        end
+        
         args
       end
 
@@ -74,13 +94,13 @@ module BetaBuilder
         else
           "#{target}.ipa"
         end
-      end
+      end      
       
       def built_app_path
         if build_dir == :derived
-          "#{derived_build_dir}/#{configuration}-iphoneos/#{app_file_name}"
+          File.join("#{derived_build_dir}", "#{configuration}-iphoneos", "#{app_file_name}")
         else
-          "#{build_dir}/#{configuration}-iphoneos/#{app_file_name}"
+          File.join("#{build_dir}", "#{configuration}-iphoneos", "#{app_file_name}")
         end
       end
       
@@ -101,12 +121,12 @@ module BetaBuilder
         "#{built_app_path}.dSYM"
       end
       
-      def dist_path
-        File.join("pkg/dist")
+      def ipa_path
+        File.join(File.expand_path(ipa_destination_path), ipa_name)
       end
       
-      def ipa_path
-        File.join(dist_path, ipa_name)
+      def build_number_git
+        `git describe --tags --abbrev=1`.chop
       end
       
       def deploy_using(strategy_name, &block)
@@ -122,16 +142,22 @@ module BetaBuilder
     private
     
     def define
-      namespace(@namespace) do
-        desc "Build the beta release of the app"
-        task :build => :clean do
-          xcodebuild @configuration.build_arguments, "build"
-        end
-        
+      namespace(@namespace) do        
+        desc "Clean the Build"
         task :clean do
           unless @configuration.skip_clean
+            print "Cleaning Project..."
             xcodebuild @configuration.build_arguments, "clean"
+            puts "Done"
           end
+        end
+        
+        desc "Build the beta release of the app"
+        task :build => :clean do
+          print "Building Project..."
+          xcodebuild @configuration.build_arguments, "build"
+          raise "** BUILD FAILED **" if BuildOutputParser.new(File.read("build.output")).failed?
+          puts "Done"
         end
         
         desc "Package the beta release as an IPA file"
@@ -139,17 +165,41 @@ module BetaBuilder
           if @configuration.auto_archive
             Rake::Task["#{@namespace}:archive"].invoke
           end
-                    
-          FileUtils.rm_rf('pkg') && FileUtils.mkdir_p('pkg')
-          FileUtils.mkdir_p("pkg/Payload")
-          FileUtils.mv(@configuration.built_app_path, "pkg/Payload/#{@configuration.app_file_name}")
-          Dir.chdir("pkg") do
-            system("zip -r '#{@configuration.ipa_name}' Payload")
+          print "Packaging and Signing..."          
+          raise "** PACKAGE FAILED ** No Signing Identity Found" unless @configuration.signing_identity
+          raise "** PACKAGE FAILED ** No Provisioning Profile Found" unless @configuration.provisioning_profile
+          
+          # Construct the IPA and Sign it
+          cmd = []
+          cmd << @configuration.xcrun_path
+          cmd << "-sdk iphoneos"
+          cmd << "PackageApplication"
+          cmd << "-v '#{@configuration.built_app_path}'"
+          cmd << "-o '#{@configuration.ipa_path}'"
+          cmd << "--sign '#{@configuration.signing_identity}'"
+          cmd << "--embed '#{@configuration.provisioning_profile}'"
+          if @configuration.packageargs
+            cmd.concat @configuration.packageargs if @configuration.packageargs.is_a? Array
+            cmd << @configuration.packageargs if @configuration.packageargs.is_a? String
           end
-          FileUtils.mkdir('pkg/dist')
-          FileUtils.mv("pkg/#{@configuration.ipa_name}", "pkg/dist")
+          puts "Running #{cmd.join(" ")}" if @configuration.verbose
+          cmd << "2>&1 %s build.output" % (@configuration.verbose ? '| tee' : '>')
+          cmd = cmd.join(" ")
+          system(cmd)
+          
+          puts "Done"
+          
+          puts "IPA File: #{@configuration.ipa_path}" if @configuration.verbose
         end
-        
+
+        desc "Build and archive the app"
+        task :archive => :build do
+          puts "Archiving build..."
+          archive = BetaBuilder.archive(@configuration)
+          output_path = archive.save_to(@configuration.archive_path)
+          puts "Archive saved to #{output_path}."
+        end
+
         if @configuration.deployment_strategy
           desc "Prepare your app for deployment"
           task :prepare => :package do
@@ -166,14 +216,6 @@ module BetaBuilder
             @configuration.deployment_strategy.prepare
             @configuration.deployment_strategy.deploy
           end
-        end
-        
-        desc "Build and archive the app"
-        task :archive => :build do
-          puts "Archiving build..."
-          archive = BetaBuilder.archive(@configuration)
-          output_path = archive.save_to(@configuration.archive_path)
-          puts "Archive saved to #{output_path}."
         end
       end
     end

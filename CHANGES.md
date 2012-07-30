@@ -1,3 +1,18 @@
+## 0.7.5
+* Allows automation of version/build number setting
+* Adds full paths to xcodebuild and xcrun; they are override-able in the config
+* Adds ability to add arguments to package command
+* Refactors commands and argument code
+* Makes build and signing output optional (use config.verbose to trigger) 
+* Adds simplified output
+* Allows custom SCP ports (@smtlaissezfaire)
+* Fixes Archive task failure (@rennarda)
+* Uses Apple's Packager to produce valid IPAs (@dts)
+* Fixes cases where CFPropertyList could fail to load (@svelix)
+* Uses relative paths for requires (@smtlaissezfaire)
+* Raises an exception if the build fails (@epall)
+
+
 ## 0.7.4.1
 * Allow auto-archiving from other Rake namespaces (@victor)
 * Fixed bug with Xcode archive sharing (@victor)

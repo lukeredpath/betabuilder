@@ -1,9 +1,13 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = "betabuilder"
-  s.version = "0.7.4.1"
-
+  s.name              = "betabuilder"
+  s.version           = "0.7.5"
+  s.summary           = "A set of Rake tasks and utilities for managing iOS ad-hoc builds"
+  s.authors           = ["Luke Redpath", "Nick Peelman"]
+  s.email             = ["luke@lukeredpath.co.uk", "nick@peelman.us"]
+  s.homepage          = "http://github.com/peelman/betabuilder"
+  
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Luke Redpath"]
   s.date = "2012-05-16"
@@ -14,7 +18,6 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--main", "README.md"]
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.11"
-  s.summary = "A set of Rake tasks and utilities for managing iOS ad-hoc builds"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
