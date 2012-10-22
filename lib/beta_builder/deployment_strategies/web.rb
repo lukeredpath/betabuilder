@@ -18,7 +18,7 @@ module BetaBuilder
       end
       
       def prepare
-        plist = CFPropertyList::List.new(:file => "pkg/Payload/#{@configuration.app_name}/Info.plist")
+        plist = CFPropertyList::List.new(:file => "pkg/Payload/#{@configuration.app_name}.app/Info.plist")
         plist_data = CFPropertyList.native_types(plist.value)
         File.open("pkg/dist/manifest.plist", "w") do |io|
           io << %{
