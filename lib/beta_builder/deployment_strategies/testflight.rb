@@ -67,7 +67,7 @@ module BetaBuilder
           system("#{editor} #{filepath}")
           @configuration.release_notes = File.read(filepath)
         ensure
-          rm_rf(dir)
+          FileUtils.rm_rf(dir)
         end
       end
       
