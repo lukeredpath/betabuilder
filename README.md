@@ -117,19 +117,35 @@ Finally, you can also specify an array of distribution lists that you want to al
       tf.distribution_lists = %w{Testers Internal}
     end
 
-### Deploying to your own server
+### Deploying to your own server (SSH)
 
 BetaBuilder also comes with a rather rudimentary web-based deployment task that uses SCP, so you will need SSH access to your server and appropriate permissions to use it. This works in the same way as the original iOS-BetaBuilder GUI app by generating a HTML template and manifest file that can be uploaded to a directly on your server. It includes links to install the app automatically on the device or download the IPA file.
 
 You will to configure betabuilder to use the `web` deployment strategy with some additional configuration:
 
     config.deploy_using(:web) do |web|
+      web.protocol = "ssh"
       web.deploy_to = "http://beta.myserver.co.uk/myapp"
       web.remote_host = "myserver.com"
       web.remote_directory = "/remote/path/to/deployment/directory"
     end
     
 The `deploy_to` setting specifies the URL that your app will be published to. The `remote_host` setting is the SSH host that will be used to copy the files to your server using SCP. Finally, the `remote_directory` setting is the path to the location to your server that files will be uploaded to. You will need to configure any virtual hosts on your server to make this work.
+
+### Deploying to your own server (FTP)
+
+Instead of SSH you can use FTP to deploy to a remote server. You still use the web deployment strategy but with a slightly different configuration than the SSH one:
+
+    config.deploy_using(:web) do |web|
+      web.protocol = "ftp"
+      web.deploy_to = "http://beta.myserver.co.uk/myapp"
+      web.remote_host = "myserver.com"
+      web.username = "myftpusername"
+      web.password = "myftppassword"
+      web.remote_directory = "/remote/path/to/deployment/directory"
+    end
+
+The `deploy_to` setting specifies the URL that your app will be published to. The `remote_host` setting is the FTP host that will be used to copy the files to your server using FTP. Finally, the `remote_directory` setting is the path to the location to your server that files will be uploaded to. You will need to configure any virtual hosts on your server to make this work. The `username` setting is your FTP username and the `password` setting is your FTP password.
 
 ## License
 

@@ -84,7 +84,29 @@ module BetaBuilder
       end
       
       def deploy
-        system("scp pkg/dist/* #{@configuration.remote_host}:#{@configuration.remote_installation_path}")
+        if @configuration.protocol == "ssh" then
+          system("scp pkg/dist/* #{@configuration.remote_host}:#{@configuration.remote_installation_path}")
+        elsif @configuration.protocol == "ftp" then
+          puts "Connecting to #{@configuration.remote_host} with username #{@configuration.username}"
+          Net::FTP.open(@configuration.remote_host, @configuration.username, @configuration.password) do |ftp|
+            begin
+              puts "Creating folder #{@configuration.remote_installation_path}"
+              ftp.mkdir(@configuration.remote_installation_path)
+            rescue Net::FTPError
+              puts "It looks like the folder is already there."
+            end
+            puts "Changing to remote folder #{@configuration.remote_installation_path}"
+            files = ftp.chdir(@configuration.remote_installation_path)
+            Dir['pkg/dist/*'].each do |f|
+              filename = File.basename(f)
+              puts "Uploading #{filename}"
+              ftp.putbinaryfile(f, filename, 1024)
+            end
+          end
+          
+        else
+          puts "No valid protocol definition found. Skipping deployment"
+        end
       end
     end
   end
