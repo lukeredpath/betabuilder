@@ -69,6 +69,20 @@ module BetaBuilder
     
     private
     
+    def ios5_style_icon_paths
+      return nil if metadata['CFBundleIcons'].nil?
+      metadata['CFBundleIcons']['CFBundlePrimaryIcon']['CFBundleIconFiles']
+    end
+    
+    def generic_icon_paths
+      metadata['CFBundleIconFiles']
+    end
+      
+    def icon_paths
+      paths = ios5_style_icon_paths || generic_icon_paths || []
+      paths.map {|file| File.join("Applications", @configuration.app_file_name, file) }
+    end
+ 
     def write_plist_to(path)
       version = metadata["CFBundleShortVersionString"] || metadata["CFBundleVersion"]
       plist = {
@@ -76,7 +90,7 @@ module BetaBuilder
           "ApplicationPath"             => File.join("Applications", @configuration.app_file_name),
           "CFBundleIdentifier"          => metadata["CFBundleIdentifier"], 
           "CFBundleShortVersionString"  => version, 
-          "IconPaths"                   => metadata["CFBundleIconFiles"].map { |file| File.join("Applications", @configuration.app_file_name, file) }
+          "IconPaths"                   => icon_paths
         }, 
         "ArchiveVersion" => 1.0, 
         "Comment"        => @configuration.release_notes_text,
