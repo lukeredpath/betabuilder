@@ -40,6 +40,7 @@ module BetaBuilder
         
         begin
           response = RestClient.post(ENDPOINT, payload, :accept => :json)
+          puts "response = ", response
         rescue => e
           response = e.response
         end
