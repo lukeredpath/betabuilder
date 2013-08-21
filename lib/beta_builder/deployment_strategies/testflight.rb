@@ -28,10 +28,10 @@ module BetaBuilder
           :replace            => @configuration.replace || false
         }
         puts "Uploading build to TestFlight..."
-        puts "payload = ", payload
         if @configuration.verbose
           puts "ipa path: #{@configuration.ipa_path}"
           puts "release notes: #{release_notes}"
+          puts "payload = ", payload
         end
         
         if @configuration.dry_run 
