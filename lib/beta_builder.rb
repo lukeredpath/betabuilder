@@ -98,7 +98,6 @@ module BetaBuilder
       end
 
       def built_app_zipped_dsym_path
-        system("cd #{built_app_path} && zip -r #{dsym_name}.zip #{dsym_name}")
         "#{built_app_path}.dSYM.zip"
       end
       
