@@ -16,13 +16,8 @@ module BetaBuilder
         end
       end
 
-      def zip_dsym
-        system("cd #{@configuration.built_app_path} && zip -r #{@configuration.dsym_name}.zip #{@configuration.dsym_name}")
-      end
-      
       def deploy
         release_notes = get_notes
-        zip_dsym
         payload = {
           :api_token          => @configuration.api_token,
           :team_token         => @configuration.team_token,
