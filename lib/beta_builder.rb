@@ -92,6 +92,12 @@ module BetaBuilder
       def built_app_dsym_path
         "#{built_app_path}.dSYM"
       end
+
+      def built_app_zipped_dsym_path
+        zip_path = "#{built_app_path}.dSYM.zip"
+        sh "zip -r #{zip_path} #{built_app_dsym_path}"
+        zip_path
+      end
       
       def dist_path
         File.join("pkg/dist")
