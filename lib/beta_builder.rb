@@ -79,13 +79,17 @@ module BetaBuilder
       def dsym_name
         "#{app_file_name}.dSYM"
       end
+
+      def built_path
+        if build_dir == :derived
+          "#{derived_build_dir_from_build_output}/#{configuration}-iphoneos/"
+        else
+          "#{build_dir}/#{configuration}-iphoneos/"
+        end
+      end
       
       def built_app_path
-        if build_dir == :derived
-          "#{derived_build_dir_from_build_output}/#{configuration}-iphoneos/#{app_file_name}"
-        else
-          "#{build_dir}/#{configuration}-iphoneos/#{app_file_name}"
-        end
+        "#{built_path}/#{app_file_name}"
       end
       
       def derived_build_dir_from_build_output
@@ -146,7 +150,7 @@ module BetaBuilder
           Dir.chdir("pkg") do
             system("zip -r '#{@configuration.ipa_name}' Payload")
           end
-          Dir.chdir(@configuration.built_app_path) do
+          Dir.chdir(@configuration.built_path) do
             system("zip -r #{@configuration.dsym_name}.zip #{@configuration.dsym_name}")
           end
           FileUtils.mkdir('pkg/dist')
