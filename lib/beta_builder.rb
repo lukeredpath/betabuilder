@@ -151,7 +151,7 @@ module BetaBuilder
             system("zip -r '#{@configuration.ipa_name}' Payload")
           end
           Dir.chdir(@configuration.built_path) do
-            system("zip -r #{@configuration.dsym_name}.zip #{@configuration.dsym_name}")
+            system("ditto -c -k --sequesterRsrc --keepParent #{@configuration.dsym_name} #{@configuration.dsym_name}.zip")
           end
           FileUtils.mkdir('pkg/dist')
           FileUtils.mv("pkg/#{@configuration.ipa_name}", "pkg/dist")
