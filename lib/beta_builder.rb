@@ -75,6 +75,10 @@ module BetaBuilder
           "#{target}.ipa"
         end
       end
+
+      def dsym_name
+        "#{app_file_name}.dSYM"
+      end
       
       def built_app_path
         if build_dir == :derived
@@ -94,9 +98,8 @@ module BetaBuilder
       end
 
       def built_app_zipped_dsym_path
-        zip_path = "#{built_app_path}.dSYM.zip"
-        system("zip -r #{zip_path} #{built_app_dsym_path}")
-        zip_path
+        system("cd #{built_app_path} && zip -r #{dsym_name}.zip #{dsym_name}")
+        "#{built_app_path}.dSYM.zip"
       end
       
       def dist_path
