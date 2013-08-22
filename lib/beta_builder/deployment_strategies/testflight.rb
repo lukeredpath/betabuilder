@@ -26,7 +26,7 @@ module BetaBuilder
           :distribution_lists => (@configuration.distribution_lists || []).join(","),
           :notify             => @configuration.notify || false,
           :replace            => @configuration.replace || false,
-          :dsym               => @configuration.built_app_zipped_dsym_path
+          :dsym               => File.new(@configuration.built_app_zipped_dsym_path, 'rb')
         }
         puts "Uploading build to TestFlight..."
         if @configuration.verbose
