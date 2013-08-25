@@ -129,7 +129,9 @@ module BetaBuilder
       namespace(@namespace) do
         desc "Build the beta release of the app"
         task :build => :clean do
-          xcodebuild @configuration.build_arguments, "build"
+          arch_args = ""
+          arch_args << "VALID_ARCHS=\"#{arch}\"" unless arch.nil?
+          xcodebuild @configuration.build_arguments, "build", arch_args
         end
         
         task :clean do
