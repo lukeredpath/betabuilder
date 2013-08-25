@@ -130,7 +130,7 @@ module BetaBuilder
         desc "Build the beta release of the app"
         task :build => :clean do
           arch_args = ""
-          arch_args << "VALID_ARCHS=\"#{arch}\"" unless arch.nil?
+          arch_args << "VALID_ARCHS=\"#{@configuration.arch}\"" unless @configuration.arch.nil?
           xcodebuild @configuration.build_arguments, "build", arch_args
         end
         
