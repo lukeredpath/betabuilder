@@ -15,7 +15,7 @@ module BetaBuilder
           end
         end
       end
-      
+
       def deploy
         release_notes = get_notes
         payload = {
@@ -25,12 +25,14 @@ module BetaBuilder
           :notes              => release_notes,
           :distribution_lists => (@configuration.distribution_lists || []).join(","),
           :notify             => @configuration.notify || false,
-          :replace            => @configuration.replace || false
+          :replace            => @configuration.replace || false,
+          :dsym               => File.new(@configuration.built_app_zipped_dsym_path, 'rb')
         }
         puts "Uploading build to TestFlight..."
         if @configuration.verbose
           puts "ipa path: #{@configuration.ipa_path}"
           puts "release notes: #{release_notes}"
+          puts "payload = ", payload
         end
         
         if @configuration.dry_run 
@@ -40,6 +42,7 @@ module BetaBuilder
         
         begin
           response = RestClient.post(ENDPOINT, payload, :accept => :json)
+          puts "response = ", response
         rescue => e
           response = e.response
         end
@@ -67,7 +70,7 @@ module BetaBuilder
           system("#{editor} #{filepath}")
           @configuration.release_notes = File.read(filepath)
         ensure
-          rm_rf(dir)
+          FileUtils.rm_rf(dir)
         end
       end
       

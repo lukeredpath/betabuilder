@@ -44,10 +44,10 @@ module BetaBuilder
         args = ""
         if workspace_path
           raise "A scheme is required if building from a workspace" unless scheme
-          args << "-workspace '#{workspace_path}' -scheme '#{scheme}' -configuration '#{configuration}'"
+          args << "-workspace \"#{workspace_path}\" -scheme \"#{scheme}\" -configuration '#{configuration}'"
         else
-          args = "-target '#{target}' -configuration '#{configuration}' -sdk iphoneos"
-          args << " -project #{project_file_path}" if project_file_path
+          args = "-target \"#{target}\" -configuration '#{configuration}' -sdk iphoneos"
+          args << " -project \"#{project_file_path}\"" if project_file_path
         end
 
         args << " -arch \"#{arch}\"" unless arch.nil?
@@ -75,13 +75,21 @@ module BetaBuilder
           "#{target}.ipa"
         end
       end
+
+      def dsym_name
+        "#{app_file_name}.dSYM"
+      end
+
+      def built_path
+        if build_dir == :derived
+          "#{derived_build_dir_from_build_output}/#{configuration}-iphoneos/"
+        else
+          "#{build_dir}/#{configuration}-iphoneos/"
+        end
+      end
       
       def built_app_path
-        if build_dir == :derived
-          "#{derived_build_dir_from_build_output}/#{configuration}-iphoneos/#{app_file_name}"
-        else
-          "#{build_dir}/#{configuration}-iphoneos/#{app_file_name}"
-        end
+        "#{built_path}/#{app_file_name}"
       end
       
       def derived_build_dir_from_build_output
@@ -91,6 +99,10 @@ module BetaBuilder
       
       def built_app_dsym_path
         "#{built_app_path}.dSYM"
+      end
+
+      def built_app_zipped_dsym_path
+        "#{built_app_path}.dSYM.zip"
       end
       
       def dist_path
@@ -117,7 +129,9 @@ module BetaBuilder
       namespace(@namespace) do
         desc "Build the beta release of the app"
         task :build => :clean do
-          xcodebuild @configuration.build_arguments, "build"
+          arch_args = ""
+          arch_args << "VALID_ARCHS=\"#{@configuration.arch}\"" unless @configuration.arch.nil?
+          xcodebuild @configuration.build_arguments, "build", arch_args
         end
         
         task :clean do
@@ -137,6 +151,9 @@ module BetaBuilder
           FileUtils.mv(@configuration.built_app_path, "pkg/Payload/#{@configuration.app_file_name}")
           Dir.chdir("pkg") do
             system("zip -r '#{@configuration.ipa_name}' Payload")
+          end
+          Dir.chdir(@configuration.built_path) do
+            system("ditto -c -k --sequesterRsrc --keepParent #{@configuration.dsym_name} #{@configuration.dsym_name}.zip")
           end
           FileUtils.mkdir('pkg/dist')
           FileUtils.mv("pkg/#{@configuration.ipa_name}", "pkg/dist")
