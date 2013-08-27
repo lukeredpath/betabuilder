@@ -44,10 +44,10 @@ module BetaBuilder
         args = ""
         if workspace_path
           raise "A scheme is required if building from a workspace" unless scheme
-          args << "-workspace '#{workspace_path}' -scheme '#{scheme}' -configuration '#{configuration}'"
+          args << "-workspace \"#{workspace_path}\" -scheme \"#{scheme}\" -configuration '#{configuration}'"
         else
-          args = "-target '#{target}' -configuration '#{configuration}' -sdk iphoneos"
-          args << " -project #{project_file_path}" if project_file_path
+          args = "-target \"#{target}\" -configuration '#{configuration}' -sdk iphoneos"
+          args << " -project \"#{project_file_path}\"" if project_file_path
         end
 
         args << " -arch \"#{arch}\"" unless arch.nil?
